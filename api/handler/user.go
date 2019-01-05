@@ -26,8 +26,9 @@ func (u *User) Create(c *gin.Context) {
 
 	user, err := u.middleware.Create()
 	if err != nil {
+		fmt.Printf("%+v", err)
 		c.JSON(http.StatusInternalServerError, ErrorMessage{
-			Error: fmt.Sprintf("%v", err),
+			Error: "create user failed",
 		})
 		return
 	}
