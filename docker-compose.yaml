@@ -1,0 +1,23 @@
+version: '3'
+services:
+  db:
+    build: ./deployments/db
+    environment:
+      POSTGRES_DB: curve
+      POSTGRES_USER: postgres
+    ports:
+      - '5432:5432'
+  app:
+    build: .
+    # The wait-for-it file contains a script 
+    # To test and wait on the availability of a TCP host and port (e.g. DB)
+    # source https://github.com/vishnubob/wait-for-it
+    command: ["./wait-for-it.sh", "db:5432", "--", "go", "run", "main.go"]
+    volumes:
+      - .:/go/src/github.com/ferruvich/curve-challenge
+    ports:
+      - '8080:8080'
+    depends_on:
+      - db
+    links:
+      - db

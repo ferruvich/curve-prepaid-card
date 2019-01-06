@@ -15,7 +15,7 @@ const (
 	// PRODUCTIONENV is used to recognise if we are in production or not
 	PRODUCTIONENV = "production"
 	// DBDOCKERHOST is the DB docker container name
-	DBDOCKERHOST = "psql"
+	DBDOCKERHOST = "db"
 )
 
 // Configuration embeds full configuration
