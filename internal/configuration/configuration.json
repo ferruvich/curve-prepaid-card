@@ -1,0 +1,15 @@
+{
+    "ENVIRONMENT": "development",
+    "GIN_MODE": "debug",
+    "SERVER": {
+        "HOST": "localhost",
+        "PORT": "8080"
+    },
+    "PSQL": {
+        "DRIVER": "postgres",
+        "DBNAME": "curve",
+        "USER": "postgres",
+        "HOST": "localhost",
+        "SSL": "disable"
+    }
+}
