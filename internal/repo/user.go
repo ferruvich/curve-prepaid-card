@@ -11,6 +11,8 @@ import (
 	"github.com/pkg/errors"
 )
 
+//go:generate mockgen -destination=user_mock.go -package=repo github.com/ferruvich/curve-challenge/internal/repo User
+
 // User is the interface that contains all DB function for user
 type User interface {
 	Write(user *model.User) error
