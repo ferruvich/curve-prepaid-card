@@ -5,6 +5,7 @@
 package repo
 
 import (
+	context "context"
 	model "github.com/ferruvich/curve-challenge/api/model"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
@@ -34,13 +35,13 @@ func (m *MockUser) EXPECT() *MockUserMockRecorder {
 }
 
 // Write mocks base method
-func (m *MockUser) Write(arg0 *model.User) error {
-	ret := m.ctrl.Call(m, "Write", arg0)
+func (m *MockUser) Write(arg0 context.Context, arg1 *model.User) error {
+	ret := m.ctrl.Call(m, "Write", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Write indicates an expected call of Write
-func (mr *MockUserMockRecorder) Write(arg0 interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Write", reflect.TypeOf((*MockUser)(nil).Write), arg0)
+func (mr *MockUserMockRecorder) Write(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Write", reflect.TypeOf((*MockUser)(nil).Write), arg0, arg1)
 }

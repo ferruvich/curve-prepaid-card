@@ -1,21 +1,23 @@
 package repo
 
 import (
+	"context"
 	"database/sql"
 
 	// Mandatory for PSQL
 	_ "github.com/lib/pq"
+	"github.com/pkg/errors"
 
 	"github.com/ferruvich/curve-challenge/api/model"
+	"github.com/ferruvich/curve-challenge/internal/configuration"
 	"github.com/ferruvich/curve-challenge/pkg/psql"
-	"github.com/pkg/errors"
 )
 
 //go:generate mockgen -destination=user_mock.go -package=repo github.com/ferruvich/curve-challenge/internal/repo User
 
 // User is the interface that contains all DB function for user
 type User interface {
-	Write(user *model.User) error
+	Write(context.Context, *model.User) error
 }
 
 // UserRepo handler user write operation in DB
@@ -25,8 +27,14 @@ type UserRepo struct {
 
 // NewUserRepo initialize the db connection and
 // returns the initialized structure
-func NewUserRepo() (*UserRepo, error) {
-	db, err := sql.Open(SQLDRIVER, newSessionString())
+func NewUserRepo(ctx context.Context) (User, error) {
+
+	cfg, ok := ctx.Value("cfg").(*configuration.Configuration)
+	if !ok {
+		return nil, errors.Errorf("error loading configuration")
+	}
+
+	db, err := sql.Open(cfg.Psql.DriverName, newSessionString(*cfg))
 	if err != nil {
 		return nil, errors.Wrap(err, "error initializing db connection")
 	}
@@ -37,7 +45,7 @@ func NewUserRepo() (*UserRepo, error) {
 }
 
 // Write writes a new user on DB
-func (ur *UserRepo) Write(user *model.User) error {
+func (ur *UserRepo) Write(ctx context.Context, user *model.User) error {
 
 	statements := []*psql.PipelineStmt{
 		psql.NewPipelineStmt("INSERT INTO users VALUES ($1)", user.ID),
