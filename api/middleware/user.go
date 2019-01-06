@@ -1,8 +1,6 @@
 package middleware
 
 import (
-	"fmt"
-
 	"github.com/ferruvich/curve-challenge/api/model"
 	"github.com/ferruvich/curve-challenge/internal/repo"
 )
@@ -14,17 +12,19 @@ type User interface {
 
 // UserMiddleware is the User implementation
 type UserMiddleware struct {
-	repo *repo.UserRepo
+	repo repo.User
 }
 
 // NewUserMiddleware returns a new middleware for user
-func NewUserMiddleware() User {
+func NewUserMiddleware() (User, error) {
 	repo, err := repo.NewUserRepo()
-	fmt.Println(err)
+	if err != nil {
+		return nil, err
+	}
 
 	return &UserMiddleware{
 		repo: repo,
-	}
+	}, nil
 }
 
 // Create creates and returns new users, or an error if there is one

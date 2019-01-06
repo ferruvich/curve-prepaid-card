@@ -15,10 +15,13 @@ type User struct {
 }
 
 // NewUserHandler returns a newly created user handler
-func NewUserHandler() Handler {
-	return &User{
-		middleware: middleware.NewUserMiddleware(),
+func NewUserHandler() (Handler, error) {
+	middleware, err := middleware.NewUserMiddleware()
+	if err != nil {
+		return nil, err
 	}
+
+	return &User{middleware}, nil
 }
 
 // Create is the HTTP handler of the POST /user
