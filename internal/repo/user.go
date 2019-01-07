@@ -18,6 +18,7 @@ import (
 // User is the interface that contains all DB function for user
 type User interface {
 	Write(context.Context, *model.User) error
+	Read(context.Context, string) (*model.User, error)
 }
 
 // UserRepo handler user write operation in DB
@@ -60,4 +61,28 @@ func (ur *UserRepo) Write(ctx context.Context, user *model.User) error {
 	}
 
 	return nil
+}
+
+// Read reds a user from DB
+func (ur *UserRepo) Read(ctx context.Context, userID string) (*model.User, error) {
+
+	var user model.User
+
+	statements := []*psql.PipelineStmt{
+		psql.NewPipelineStmt("INSERT INTO users VALUES ($1)", userID),
+	}
+
+	rows, err := psql.WithTransactionWithResponse(ur.dbConnection, func(tx psql.Transaction) (*sql.Rows, error) {
+		res, err := psql.RunPipeline(tx, statements...)
+		return res.(*sql.Rows), err
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, "error writing user")
+	}
+
+	if err = rows.Scan(&user.ID); err != nil {
+		return nil, errors.Wrap(err, "error while writing user struct")
+	}
+
+	return nil, nil
 }

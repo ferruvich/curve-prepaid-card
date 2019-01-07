@@ -39,7 +39,7 @@ func TestNewPipelineStmt(t *testing.T) {
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			pipelineStmt := NewPipelineStmt(test.query, test.args...)
+			pipelineStmt := NewPipelineStmt(nil, test.query, test.args...)
 
 			require.NotNil(t, pipelineStmt)
 		})

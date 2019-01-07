@@ -10,6 +10,7 @@ import (
 // User represents the user middleware interface
 type User interface {
 	Create(context.Context) (*model.User, error)
+	Read(context.Context, string) (*model.User, error)
 }
 
 // UserMiddleware is the User implementation
@@ -38,6 +39,17 @@ func (u *UserMiddleware) Create(ctx context.Context) (*model.User, error) {
 	}
 
 	if err = u.repo.Write(ctx, user); err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
+// Read returns an existing user
+func (u *UserMiddleware) Read(ctx context.Context, userID string) (*model.User, error) {
+
+	user, err := u.repo.Read(ctx, userID)
+	if err != nil {
 		return nil, err
 	}
 

@@ -42,3 +42,28 @@ func WithTransaction(db *sql.DB, fn func(Transaction) error) (err error) {
 	err = fn(tx)
 	return err
 }
+
+// WithTransactionWithResponse creates a new transaction and handles rollback/commit based on the
+// error object returned by the function fn, and returns its response
+func WithTransactionWithResponse(db *sql.DB, fn func(Transaction) (*sql.Rows, error)) (*sql.Rows, error) {
+	tx, err := db.Begin()
+	if err != nil {
+		return nil, err
+	}
+
+	defer func() {
+		if p := recover(); p != nil {
+			// a panic occurred, rollback and repanic
+			tx.Rollback()
+			panic(p)
+		} else if err != nil {
+			// something went wrong, rollback
+			tx.Rollback()
+		} else {
+			// all good, commit
+			err = tx.Commit()
+		}
+	}()
+
+	return fn(tx)
+}
