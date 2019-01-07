@@ -44,17 +44,18 @@ func NewCardRepo(ctx context.Context) (Card, error) {
 // Write writes a new card on DB
 func (c *CardRepo) Write(ctx context.Context, card *model.Card) error {
 	statements := []*psql.PipelineStmt{
-		psql.NewPipelineStmt("INSERT INTO cards VALUES ($1)",
+		psql.NewPipelineStmt(
+			"INSERT INTO cards(ID,owner,account_balance,blocked_amount) VALUES ($1,$2,$3,$4)",
 			card.ID, card.Owner, card.AccountBalance, (card.AccountBalance - card.AvailableBalance),
 		),
 	}
 
-	err := psql.WithTransaction(c.dbConnection, func(tx psql.Transaction) error {
+	_, err := psql.WithTransaction(c.dbConnection, func(tx psql.Transaction) (*sql.Rows, error) {
 		_, err := psql.RunPipeline(tx, statements...)
-		return err
+		return nil, err
 	})
 	if err != nil {
-		return errors.Wrap(err, "error writing merchant")
+		return errors.Wrap(err, "error writing card")
 	}
 
 	return nil

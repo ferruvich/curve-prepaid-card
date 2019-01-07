@@ -17,7 +17,7 @@ type Card struct {
 func NewCard(userID string) (*Card, error) {
 	cardUUID, err := uuid.NewUUID()
 	if err != nil {
-		return nil, errors.Wrap(err, "error generating user id")
+		return nil, errors.Wrap(err, "error generating card id")
 	}
 
 	return &Card{

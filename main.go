@@ -26,20 +26,30 @@ func main() {
 	// Building context
 	ctx := context.WithValue(context.Background(), "cfg", cfg)
 
-	// User routes
+	// Initializing handlers
+
+	// User handler
 	userHandler, err := handler.NewUserHandler(ctx)
 	if err != nil {
 		fmt.Printf("%+v", err)
 		return
 	}
-	router.POST("/user", userHandler.Create(ctx))
-
-	// Merchant routes
+	// Merchant Handler
 	merchantHandler, err := handler.NewMerchantHandler(ctx)
 	if err != nil {
 		fmt.Printf("%+v", err)
 		return
 	}
+	// Card Handler
+	cardHandler, err := handler.NewCardHandler(ctx)
+	if err != nil {
+		fmt.Printf("%+v", err)
+		return
+	}
+
+	// Routes
+	router.POST("/user", userHandler.Create(ctx))
+	router.POST("/user/:userID/card", cardHandler.Create(ctx))
 	router.POST("/merchant", merchantHandler.Create(ctx))
 
 	router.Run(strings.Join(

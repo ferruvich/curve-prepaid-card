@@ -1,26 +1,13 @@
 package psql
 
 import (
+	sql "database/sql"
 	"testing"
 
 	"github.com/golang/mock/gomock"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
 )
-
-// fakeSQLResult implements sql.Result in order to make us able to
-// mock Transaction functions such as Exec
-type fakeSQLresult struct{}
-
-// Since we do not care what these functions are returning
-// we make them as simple as possible
-func (f *fakeSQLresult) LastInsertId() (int64, error) {
-	return 1, nil
-}
-
-func (f *fakeSQLresult) RowsAffected() (int64, error) {
-	return 1, nil
-}
 
 func TestNewPipelineStmt(t *testing.T) {
 
@@ -39,14 +26,17 @@ func TestNewPipelineStmt(t *testing.T) {
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			pipelineStmt := NewPipelineStmt(nil, test.query, test.args...)
+			pipelineStmt := NewPipelineStmt(test.query, test.args...)
 
 			require.NotNil(t, pipelineStmt)
 		})
 	}
 }
 
-func TestPipelineStmt_Exec(t *testing.T) {
+func TestPipelineStmt_Query(t *testing.T) {
+
+	fakeRows := &sql.Rows{}
+
 	pipelineStmt := &PipelineStmt{
 		query: "SQL INSERT Query", args: []interface{}{},
 	}
@@ -55,11 +45,11 @@ func TestPipelineStmt_Exec(t *testing.T) {
 	defer controller.Finish()
 	mockTransaction := NewMockTransaction(controller)
 
-	mockTransaction.EXPECT().Exec("SQL INSERT Query").Return(
-		&fakeSQLresult{}, nil,
+	mockTransaction.EXPECT().Query("SQL INSERT Query").Return(
+		fakeRows, nil,
 	)
 
-	sqlResult, err := pipelineStmt.Exec(mockTransaction)
+	sqlResult, err := pipelineStmt.Query(mockTransaction)
 
 	require.NoError(t, err)
 	require.NotNil(t, sqlResult)
@@ -67,14 +57,16 @@ func TestPipelineStmt_Exec(t *testing.T) {
 
 func TestRunPipeline(t *testing.T) {
 
+	fakeRows := &sql.Rows{}
+
 	controller := gomock.NewController(t)
 	defer controller.Finish()
 	mockTransaction := NewMockTransaction(controller)
 
-	mockTransaction.EXPECT().Exec("Q1").Return(
-		&fakeSQLresult{}, nil,
+	mockTransaction.EXPECT().Query("Q1").Return(
+		fakeRows, nil,
 	)
-	mockTransaction.EXPECT().Exec("Q2").Return(
+	mockTransaction.EXPECT().Query("Q2").Return(
 		nil, errors.Errorf("Error"),
 	)
 

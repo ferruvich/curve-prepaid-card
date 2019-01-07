@@ -51,9 +51,9 @@ func (mr *MerchantRepo) Write(ctx context.Context, merchant *model.Merchant) err
 		psql.NewPipelineStmt("INSERT INTO merchants VALUES ($1)", merchant.ID),
 	}
 
-	err := psql.WithTransaction(mr.dbConnection, func(tx psql.Transaction) error {
+	_, err := psql.WithTransaction(mr.dbConnection, func(tx psql.Transaction) (*sql.Rows, error) {
 		_, err := psql.RunPipeline(tx, statements...)
-		return err
+		return nil, err
 	})
 	if err != nil {
 		return errors.Wrap(err, "error writing merchant")

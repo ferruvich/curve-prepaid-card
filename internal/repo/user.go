@@ -52,9 +52,9 @@ func (ur *UserRepo) Write(ctx context.Context, user *model.User) error {
 		psql.NewPipelineStmt("INSERT INTO users VALUES ($1)", user.ID),
 	}
 
-	err := psql.WithTransaction(ur.dbConnection, func(tx psql.Transaction) error {
+	_, err := psql.WithTransaction(ur.dbConnection, func(tx psql.Transaction) (*sql.Rows, error) {
 		_, err := psql.RunPipeline(tx, statements...)
-		return err
+		return nil, err
 	})
 	if err != nil {
 		return errors.Wrap(err, "error writing user")
@@ -66,23 +66,26 @@ func (ur *UserRepo) Write(ctx context.Context, user *model.User) error {
 // Read reds a user from DB
 func (ur *UserRepo) Read(ctx context.Context, userID string) (*model.User, error) {
 
-	var user model.User
+	user := &model.User{}
 
 	statements := []*psql.PipelineStmt{
-		psql.NewPipelineStmt("INSERT INTO users VALUES ($1)", userID),
+		psql.NewPipelineStmt("SELECT * FROM users WHERE ID=$1", userID),
 	}
 
-	rows, err := psql.WithTransactionWithResponse(ur.dbConnection, func(tx psql.Transaction) (*sql.Rows, error) {
+	rows, err := psql.WithTransaction(ur.dbConnection, func(tx psql.Transaction) (*sql.Rows, error) {
 		res, err := psql.RunPipeline(tx, statements...)
-		return res.(*sql.Rows), err
+		if !res.Next() {
+			return nil, errors.Errorf("user not found")
+		}
+		if err = res.Scan(&user.ID); err != nil {
+			return nil, errors.Wrap(err, "error building user struct")
+		}
+		return res, err
 	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error writing user")
 	}
+	defer rows.Close()
 
-	if err = rows.Scan(&user.ID); err != nil {
-		return nil, errors.Wrap(err, "error while writing user struct")
-	}
-
-	return nil, nil
+	return user, nil
 }
