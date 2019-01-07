@@ -13,12 +13,12 @@ type Merchant struct {
 // NewMerchant returns a newly created merchant
 func NewMerchant() (*Merchant, error) {
 
-	userUUID, err := uuid.NewUUID()
+	merchantUUID, err := uuid.NewUUID()
 	if err != nil {
-		return nil, errors.Wrap(err, "error generating user id")
+		return nil, errors.Wrap(err, "error generating merchant id")
 	}
 
 	return &Merchant{
-		ID: userUUID.String(),
+		ID: merchantUUID.String(),
 	}, nil
 }
