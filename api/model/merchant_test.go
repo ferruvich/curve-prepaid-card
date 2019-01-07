@@ -7,8 +7,8 @@ import (
 )
 
 func TestNewMerchant(t *testing.T) {
-	user, err := NewMerchant()
+	merchant, err := NewMerchant()
 
 	require.NoError(t, err)
-	require.NotNil(t, user)
+	require.NotNil(t, merchant)
 }
