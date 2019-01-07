@@ -34,6 +34,14 @@ func main() {
 	}
 	router.POST("/user", userHandler.Create(ctx))
 
+	// Merchant routes
+	merchantHandler, err := handler.NewMerchantHandler(ctx)
+	if err != nil {
+		fmt.Printf("%+v", err)
+		return
+	}
+	router.POST("/merchant", merchantHandler.Create(ctx))
+
 	router.Run(strings.Join(
 		[]string{
 			cfg.Server.Host,
