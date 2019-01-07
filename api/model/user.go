@@ -10,6 +10,7 @@ type User struct {
 	ID string `json:"ID"`
 }
 
+// NewUser returns a newly created user
 func NewUser() (*User, error) {
 
 	userUUID, err := uuid.NewUUID()
