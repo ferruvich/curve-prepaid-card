@@ -33,8 +33,8 @@ func TestMerchantMiddleware_Create(t *testing.T) {
 		repo: mockRepo,
 	}
 
-	user, err := merchantMiddleware.Create(context.Background())
+	merchant, err := merchantMiddleware.Create(context.Background())
 
 	require.NoError(t, err)
-	require.NotNil(t, user)
+	require.NotNil(t, merchant)
 }
