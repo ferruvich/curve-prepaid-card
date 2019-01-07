@@ -30,14 +30,14 @@ func NewMerchantMiddleware(ctx context.Context) (Merchant, error) {
 }
 
 // Create creates and returns new merchants, or an error if there is one
-func (u *MerchantMiddleware) Create(ctx context.Context) (*model.Merchant, error) {
+func (m *MerchantMiddleware) Create(ctx context.Context) (*model.Merchant, error) {
 
 	merchant, err := model.NewMerchant()
 	if err != nil {
 		return nil, err
 	}
 
-	if err = u.repo.Write(ctx, merchant); err != nil {
+	if err = m.repo.Write(ctx, merchant); err != nil {
 		return nil, err
 	}
 

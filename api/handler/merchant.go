@@ -10,12 +10,12 @@ import (
 	"github.com/ferruvich/curve-challenge/api/middleware"
 )
 
-// Merchant represents the User handler
+// Merchant represents the Merchant handler
 type Merchant struct {
 	middleware middleware.Merchant
 }
 
-// NewUserHandler returns a newly created user handler
+// NewMerchantHandler returns a newly created merchant handler
 func NewMerchantHandler(ctx context.Context) (Handler, error) {
 	middleware, err := middleware.NewMerchantMiddleware(ctx)
 	if err != nil {
@@ -25,10 +25,10 @@ func NewMerchantHandler(ctx context.Context) (Handler, error) {
 	return &Merchant{middleware}, nil
 }
 
-// Create is the HTTP handler of the POST /user
-func (u *Merchant) Create(ctx context.Context) func(c *gin.Context) {
+// Create is the HTTP handler of the POST /merchant
+func (m *Merchant) Create(ctx context.Context) func(c *gin.Context) {
 	return func(c *gin.Context) {
-		merchant, err := u.middleware.Create(ctx)
+		merchant, err := m.middleware.Create(ctx)
 		if err != nil {
 			fmt.Printf("%+v", err)
 			c.JSON(http.StatusInternalServerError, ErrorMessage{

@@ -44,14 +44,14 @@ func NewMerchantRepo(ctx context.Context) (Merchant, error) {
 	}, nil
 }
 
-// Write writes a new user on DB
-func (ur *MerchantRepo) Write(ctx context.Context, merchant *model.Merchant) error {
+// Write writes a new merchant on DB
+func (mr *MerchantRepo) Write(ctx context.Context, merchant *model.Merchant) error {
 
 	statements := []*psql.PipelineStmt{
 		psql.NewPipelineStmt("INSERT INTO merchants VALUES ($1)", merchant.ID),
 	}
 
-	err := psql.WithTransaction(ur.dbConnection, func(tx psql.Transaction) error {
+	err := psql.WithTransaction(mr.dbConnection, func(tx psql.Transaction) error {
 		_, err := psql.RunPipeline(tx, statements...)
 		return err
 	})
