@@ -9,12 +9,14 @@ import (
 
 // Card represents the card middleware interface
 type Card interface {
-	Create(context.Context, string, User) (*model.Card, error)
+	Create(context.Context, string) (*model.Card, error)
+	SetUserMiddleware(User)
 }
 
 // CardMiddleware is the Card implementation
 type CardMiddleware struct {
-	repo repo.Card
+	repo           repo.Card
+	userMiddleware User
 }
 
 // NewCardMiddleware returns a new middleware for user
@@ -29,10 +31,16 @@ func NewCardMiddleware(ctx context.Context) (Card, error) {
 	}, nil
 }
 
-// Create creates and returns new merchants, or an error if there is one
-func (m *CardMiddleware) Create(ctx context.Context, ownerID string, userMiddleware User) (*model.Card, error) {
+// SetUserMiddleware sets the user middleware in order to use it to
+// make operations on user
+func (m *CardMiddleware) SetUserMiddleware(userMiddleware User) {
+	m.userMiddleware = userMiddleware
+}
 
-	user, err := userMiddleware.Read(ctx, ownerID)
+// Create creates and returns new merchants, or an error if there is one
+func (m *CardMiddleware) Create(ctx context.Context, ownerID string) (*model.Card, error) {
+
+	user, err := m.userMiddleware.Read(ctx, ownerID)
 	if err != nil {
 		return nil, err
 	}

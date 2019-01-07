@@ -1,7 +1,7 @@
 FROM golang:alpine
 
 # Preparing workdir
-RUN mkdir -p /go/src/github.com/andream16/curve-challenge
+RUN mkdir -p /go/src/github.com/ferruvich/curve-challenge
 WORKDIR /go/src/github.com/ferruvich/curve-challenge
 ADD . /go/src/github.com/ferruvich/curve-challenge
 

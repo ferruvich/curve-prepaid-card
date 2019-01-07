@@ -40,15 +40,13 @@ func TestCardMiddleware_Create(t *testing.T) {
 		gomock.Any(),
 	).Return(nil)
 
-	userMiddleware := &UserMiddleware{
-		repo: mockUserRepo,
-	}
-
 	cardMiddleware := &CardMiddleware{
 		repo: mockCardRepo,
+		userMiddleware: &UserMiddleware{
+			repo: mockUserRepo,
+		},
 	}
-
-	merchant, err := cardMiddleware.Create(context.Background(), ownerID, userMiddleware)
+	merchant, err := cardMiddleware.Create(context.Background(), ownerID)
 
 	require.NoError(t, err)
 	require.NotNil(t, merchant)
