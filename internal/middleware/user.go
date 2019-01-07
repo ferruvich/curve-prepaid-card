@@ -3,7 +3,7 @@ package middleware
 import (
 	"context"
 
-	"github.com/ferruvich/curve-challenge/api/model"
+	"github.com/ferruvich/curve-challenge/internal/model"
 	"github.com/ferruvich/curve-challenge/internal/repo"
 )
 

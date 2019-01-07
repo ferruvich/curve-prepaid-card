@@ -4,8 +4,8 @@ import (
 	context "context"
 	"database/sql"
 
-	model "github.com/ferruvich/curve-challenge/api/model"
 	"github.com/ferruvich/curve-challenge/internal/configuration"
+	"github.com/ferruvich/curve-challenge/internal/model"
 	"github.com/ferruvich/curve-challenge/pkg/psql"
 	"github.com/pkg/errors"
 )

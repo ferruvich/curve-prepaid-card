@@ -6,9 +6,10 @@ package repo
 
 import (
 	context "context"
-	model "github.com/ferruvich/curve-challenge/api/model"
-	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
+
+	model "github.com/ferruvich/curve-challenge/internal/model"
+	gomock "github.com/golang/mock/gomock"
 )
 
 // MockCard is a mock of Card interface

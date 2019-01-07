@@ -7,7 +7,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 
-	"github.com/ferruvich/curve-challenge/api/model"
+	"github.com/ferruvich/curve-challenge/internal/model"
 	"github.com/ferruvich/curve-challenge/internal/repo"
 	"github.com/ferruvich/curve-challenge/testdata"
 )

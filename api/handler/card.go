@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/ferruvich/curve-challenge/api/middleware"
+	"github.com/ferruvich/curve-challenge/internal/middleware"
 )
 
 // Card represents the Card handler

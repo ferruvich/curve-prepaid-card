@@ -8,8 +8,8 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/pkg/errors"
 
-	"github.com/ferruvich/curve-challenge/api/model"
 	"github.com/ferruvich/curve-challenge/internal/configuration"
+	"github.com/ferruvich/curve-challenge/internal/model"
 	"github.com/ferruvich/curve-challenge/pkg/psql"
 )
 
