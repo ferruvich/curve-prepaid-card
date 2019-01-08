@@ -8,8 +8,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/ferruvich/curve-challenge/api/handler"
 	"github.com/ferruvich/curve-challenge/internal/configuration"
+	"github.com/ferruvich/curve-challenge/internal/handler"
 )
 
 func main() {
