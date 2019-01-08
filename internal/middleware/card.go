@@ -10,13 +10,12 @@ import (
 // Card represents the card middleware interface
 type Card interface {
 	Create(context.Context, string) (*model.Card, error)
-	SetUserMiddleware(User)
+	GetCard(context.Context, string) (*model.Card, error)
 }
 
 // CardMiddleware is the Card implementation
 type CardMiddleware struct {
-	repo           repo.Card
-	userMiddleware User
+	repo repo.Card
 }
 
 // NewCardMiddleware returns a new middleware for user
@@ -31,21 +30,10 @@ func NewCardMiddleware(ctx context.Context) (Card, error) {
 	}, nil
 }
 
-// SetUserMiddleware sets the user middleware in order to use it to
-// make operations on user
-func (m *CardMiddleware) SetUserMiddleware(userMiddleware User) {
-	m.userMiddleware = userMiddleware
-}
-
-// Create creates and returns new merchants, or an error if there is one
+// Create creates and returns new merchants, or an error if there is any
 func (m *CardMiddleware) Create(ctx context.Context, ownerID string) (*model.Card, error) {
 
-	user, err := m.userMiddleware.Read(ctx, ownerID)
-	if err != nil {
-		return nil, err
-	}
-
-	card, err := model.NewCard(user.ID)
+	card, err := model.NewCard(ownerID)
 	if err != nil {
 		return nil, err
 	}
@@ -55,4 +43,20 @@ func (m *CardMiddleware) Create(ctx context.Context, ownerID string) (*model.Car
 	}
 
 	return card, nil
+}
+
+// GetCard gets and returns an existing card, or an error if there is any
+func (m *CardMiddleware) GetCard(ctx context.Context, cardID string) (*model.Card, error) {
+
+	card, err := m.repo.Read(ctx, cardID)
+	if err != nil {
+		return nil, err
+	}
+
+	return card, nil
+}
+
+// TopUp topups a card, adding some money
+func (m *CardMiddleware) TopUp(ctx context.Context, cardID string) (*model.Card, error) {
+	return nil, nil
 }

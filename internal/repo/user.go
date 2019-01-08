@@ -72,7 +72,7 @@ func (ur *UserRepo) Read(ctx context.Context, userID string) (*model.User, error
 		psql.NewPipelineStmt("SELECT * FROM users WHERE ID=$1", userID),
 	}
 
-	rows, err := psql.WithTransaction(ur.dbConnection, func(tx psql.Transaction) (*sql.Rows, error) {
+	_, err := psql.WithTransaction(ur.dbConnection, func(tx psql.Transaction) (*sql.Rows, error) {
 		res, err := psql.RunPipeline(tx, statements...)
 		if !res.Next() {
 			return nil, errors.Errorf("user not found")
@@ -85,7 +85,6 @@ func (ur *UserRepo) Read(ctx context.Context, userID string) (*model.User, error
 	if err != nil {
 		return nil, errors.Wrap(err, "error writing user")
 	}
-	defer rows.Close()
 
 	return user, nil
 }

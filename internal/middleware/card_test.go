@@ -7,7 +7,6 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 
-	"github.com/ferruvich/curve-challenge/internal/model"
 	"github.com/ferruvich/curve-challenge/internal/repo"
 	"github.com/ferruvich/curve-challenge/testdata"
 )
@@ -28,12 +27,6 @@ func TestCardMiddleware_Create(t *testing.T) {
 	controller := gomock.NewController(t)
 	defer controller.Finish()
 
-	mockUserRepo := repo.NewMockUser(controller)
-	mockUserRepo.EXPECT().Read(
-		context.Background(),
-		ownerID,
-	).Return(&model.User{ID: ownerID}, nil)
-
 	mockCardRepo := repo.NewMockCard(controller)
 	mockCardRepo.EXPECT().Write(
 		context.Background(),
@@ -42,9 +35,6 @@ func TestCardMiddleware_Create(t *testing.T) {
 
 	cardMiddleware := &CardMiddleware{
 		repo: mockCardRepo,
-		userMiddleware: &UserMiddleware{
-			repo: mockUserRepo,
-		},
 	}
 	merchant, err := cardMiddleware.Create(context.Background(), ownerID)
 

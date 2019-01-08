@@ -45,7 +45,13 @@ func NewCardRepo(ctx context.Context) (Card, error) {
 
 // Write writes a new card on DB
 func (c *CardRepo) Write(ctx context.Context, card *model.Card) error {
+
+	user := &model.User{}
+
 	statements := []*psql.PipelineStmt{
+		psql.NewPipelineStmt(
+			"SELECT * FROM users WHERE ID = $1", card.Owner,
+		),
 		psql.NewPipelineStmt(
 			"INSERT INTO cards(ID,owner,account_balance,blocked_amount) VALUES ($1,$2,$3,$4)",
 			card.ID, card.Owner, card.AccountBalance, (card.AccountBalance - card.AvailableBalance),
@@ -53,7 +59,21 @@ func (c *CardRepo) Write(ctx context.Context, card *model.Card) error {
 	}
 
 	_, err := psql.WithTransaction(c.dbConnection, func(tx psql.Transaction) (*sql.Rows, error) {
-		_, err := psql.RunPipeline(tx, statements...)
+		res, err := psql.RunPipeline(tx, statements[0])
+		if !res.Next() {
+			return nil, errors.Errorf("user not found")
+		}
+		if err = res.Scan(&user.ID); err != nil {
+			return nil, errors.Wrap(err, "error building user struct")
+		}
+		return res, err
+	})
+	if err != nil {
+		return err
+	}
+
+	_, err = psql.WithTransaction(c.dbConnection, func(tx psql.Transaction) (*sql.Rows, error) {
+		_, err := psql.RunPipeline(tx, statements[1])
 		return nil, err
 	})
 	if err != nil {
@@ -73,7 +93,7 @@ func (c *CardRepo) Read(ctx context.Context, cardID string) (*model.Card, error)
 		psql.NewPipelineStmt("SELECT * FROM users WHERE ID=$1", cardID),
 	}
 
-	rows, err := psql.WithTransaction(c.dbConnection, func(tx psql.Transaction) (*sql.Rows, error) {
+	_, err := psql.WithTransaction(c.dbConnection, func(tx psql.Transaction) (*sql.Rows, error) {
 		res, err := psql.RunPipeline(tx, statements...)
 		if !res.Next() {
 			return nil, errors.Errorf("user not found")
@@ -88,7 +108,6 @@ func (c *CardRepo) Read(ctx context.Context, cardID string) (*model.Card, error)
 	if err != nil {
 		return nil, errors.Wrap(err, "error writing user")
 	}
-	defer rows.Close()
 
 	return updatedCard, nil
 }

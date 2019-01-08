@@ -29,19 +29,9 @@ func NewCardHandler(ctx context.Context) (Handler, error) {
 func (m *Card) Create(ctx context.Context) func(c *gin.Context) {
 	return func(c *gin.Context) {
 
-		ownerID := c.Param("userID")
+		userID := c.Param("userID")
 
-		userMiddleware, err := middleware.NewUserMiddleware(ctx)
-		if err != nil {
-			fmt.Printf("%+v", err)
-			c.JSON(http.StatusInternalServerError, ErrorMessage{
-				Error: "create card failed",
-			})
-			return
-		}
-		m.middleware.SetUserMiddleware(userMiddleware)
-
-		merchant, err := m.middleware.Create(ctx, ownerID)
+		merchant, err := m.middleware.Create(ctx, userID)
 		if err != nil {
 			fmt.Printf("%+v", err)
 			c.JSON(http.StatusInternalServerError, ErrorMessage{
