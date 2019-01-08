@@ -67,7 +67,7 @@ func (m *CardMiddleware) TopUp(ctx context.Context, cardID string, amount float6
 
 	card.IncrementAccountBalance(amount)
 
-	if err = m.repo.Write(ctx, card); err != nil {
+	if err = m.repo.Update(ctx, card); err != nil {
 		return err
 	}
 

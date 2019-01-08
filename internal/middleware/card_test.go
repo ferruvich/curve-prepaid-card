@@ -7,12 +7,15 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 
+	"github.com/ferruvich/curve-challenge/internal/model"
 	"github.com/ferruvich/curve-challenge/internal/repo"
 	"github.com/ferruvich/curve-challenge/testdata"
 )
 
 const (
-	ownerID = "someID"
+	ownerID     = "someUserID"
+	cardID      = "someCardID"
+	amountTopUp = 10.0
 )
 
 func TestNewCardMiddleware(t *testing.T) {
@@ -36,8 +39,57 @@ func TestCardMiddleware_Create(t *testing.T) {
 	cardMiddleware := &CardMiddleware{
 		repo: mockCardRepo,
 	}
-	merchant, err := cardMiddleware.Create(context.Background(), ownerID)
+	card, err := cardMiddleware.Create(context.Background(), ownerID)
 
 	require.NoError(t, err)
-	require.NotNil(t, merchant)
+	require.NotNil(t, card)
+}
+
+func TestCardMiddleware_GetCard(t *testing.T) {
+
+	controller := gomock.NewController(t)
+	defer controller.Finish()
+
+	mockCardRepo := repo.NewMockCard(controller)
+	mockCardRepo.EXPECT().Read(
+		context.Background(), cardID,
+	).Return(&model.Card{
+		ID: cardID,
+	}, nil)
+
+	cardMiddleware := &CardMiddleware{
+		repo: mockCardRepo,
+	}
+	card, err := cardMiddleware.GetCard(context.Background(), cardID)
+
+	require.NoError(t, err)
+	require.NotNil(t, card)
+	require.Equal(t, card.ID, cardID)
+}
+
+func TestCardMiddleware_TopUp(t *testing.T) {
+
+	mockCard := &model.Card{
+		ID: cardID, AvailableBalance: 0.0, AccountBalance: 0.0,
+	}
+
+	controller := gomock.NewController(t)
+	defer controller.Finish()
+
+	mockCardRepo := repo.NewMockCard(controller)
+	mockCardRepo.EXPECT().Read(
+		context.Background(), cardID,
+	).Return(mockCard, nil)
+	mockCardRepo.EXPECT().Update(
+		context.Background(), mockCard,
+	).Return(nil)
+
+	cardMiddleware := &CardMiddleware{
+		repo: mockCardRepo,
+	}
+	err := cardMiddleware.TopUp(context.Background(), cardID, amountTopUp)
+
+	require.NoError(t, err)
+	require.Equal(t, mockCard.AccountBalance, amountTopUp)
+	require.Equal(t, mockCard.AvailableBalance, amountTopUp)
 }

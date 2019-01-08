@@ -48,11 +48,10 @@ func (mr *MockCardMockRecorder) Read(arg0, arg1 interface{}) *gomock.Call {
 }
 
 // Update mocks base method
-func (m *MockCard) Update(arg0 context.Context, arg1 *model.Card) (*model.Card, error) {
+func (m *MockCard) Update(arg0 context.Context, arg1 *model.Card) error {
 	ret := m.ctrl.Call(m, "Update", arg0, arg1)
-	ret0, _ := ret[0].(*model.Card)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // Update indicates an expected call of Update

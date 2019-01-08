@@ -83,7 +83,7 @@ func (ur *UserRepo) Read(ctx context.Context, userID string) (*model.User, error
 		return res, err
 	})
 	if err != nil {
-		return nil, errors.Wrap(err, "error writing user")
+		return nil, errors.Wrap(err, "error reading user")
 	}
 
 	return user, nil

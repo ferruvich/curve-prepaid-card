@@ -15,7 +15,7 @@ import (
 // Card is the interface that contains all DB function for cards
 type Card interface {
 	Write(context.Context, *model.Card) error
-	Update(context.Context, *model.Card) (*model.Card, error)
+	Update(context.Context, *model.Card) error
 	Read(context.Context, string) (*model.Card, error)
 }
 
@@ -90,7 +90,7 @@ func (c *CardRepo) Read(ctx context.Context, cardID string) (*model.Card, error)
 	blockedAmount := 0.0
 
 	statements := []*psql.PipelineStmt{
-		psql.NewPipelineStmt("SELECT * FROM users WHERE ID=$1", cardID),
+		psql.NewPipelineStmt("SELECT * FROM cards WHERE ID=$1", cardID),
 	}
 
 	_, err := psql.WithTransaction(c.dbConnection, func(tx psql.Transaction) (*sql.Rows, error) {
@@ -100,46 +100,35 @@ func (c *CardRepo) Read(ctx context.Context, cardID string) (*model.Card, error)
 		}
 		if err = res.Scan(&updatedCard.ID, &updatedCard.Owner,
 			&updatedCard.AccountBalance, &blockedAmount); err != nil {
-			return nil, errors.Wrap(err, "error building user struct")
+			return nil, errors.Wrap(err, "error building card struct")
 		}
 		updatedCard.AvailableBalance = updatedCard.AccountBalance - blockedAmount
 		return res, err
 	})
 	if err != nil {
-		return nil, errors.Wrap(err, "error writing user")
+		return nil, errors.Wrap(err, "error reading card")
 	}
 
 	return updatedCard, nil
 }
 
 // Update updates a card in DB
-func (c *CardRepo) Update(ctx context.Context, card *model.Card) (*model.Card, error) {
-
-	updatedCard := &model.Card{}
-	blockedAmount := 0.0
+func (c *CardRepo) Update(ctx context.Context, card *model.Card) error {
 
 	statements := []*psql.PipelineStmt{
 		psql.NewPipelineStmt(
-			"UPDATE cards SET ID=$1, owner=$2, account_balance=$3, blocked_amount=$4 where ID=$5",
+			"UPDATE cards SET owner=$2, account_balance=$3, blocked_amount=$4 where ID=$1",
 			card.ID, card.Owner, card.AccountBalance, (card.AccountBalance - card.AvailableBalance),
 		),
 	}
 
 	_, err := psql.WithTransaction(c.dbConnection, func(tx psql.Transaction) (*sql.Rows, error) {
 		res, err := psql.RunPipeline(tx, statements...)
-		if !res.Next() {
-			return nil, errors.Errorf("user not found")
-		}
-		if err = res.Scan(&updatedCard.ID, &updatedCard.Owner,
-			&updatedCard.AccountBalance, &blockedAmount); err != nil {
-			return nil, errors.Wrap(err, "error building user struct")
-		}
-		updatedCard.AvailableBalance = updatedCard.AccountBalance - blockedAmount
 		return res, err
 	})
 	if err != nil {
-		return nil, errors.Wrap(err, "error writing card")
+		return errors.Wrap(err, "error writing card")
 	}
 
-	return updatedCard, nil
+	return nil
 }
