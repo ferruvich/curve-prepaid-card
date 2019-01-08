@@ -6,7 +6,7 @@ import (
 
 	"github.com/ferruvich/curve-challenge/internal/configuration"
 	"github.com/ferruvich/curve-challenge/internal/model"
-	"github.com/ferruvich/curve-challenge/pkg/psql"
+	"github.com/ferruvich/curve-challenge/internal/psql"
 	"github.com/pkg/errors"
 )
 

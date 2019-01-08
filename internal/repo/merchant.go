@@ -10,7 +10,7 @@ import (
 
 	"github.com/ferruvich/curve-challenge/internal/configuration"
 	"github.com/ferruvich/curve-challenge/internal/model"
-	"github.com/ferruvich/curve-challenge/pkg/psql"
+	"github.com/ferruvich/curve-challenge/internal/psql"
 )
 
 //go:generate mockgen -destination=merchant_mock.go -package=repo github.com/ferruvich/curve-challenge/internal/repo Merchant
