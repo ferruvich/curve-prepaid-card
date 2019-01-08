@@ -1,62 +1,47 @@
 package configuration
 
 import (
-	"path"
-	"path/filepath"
-	"runtime"
-
-	"github.com/pkg/errors"
-	"github.com/tkanos/gonfig"
-)
-
-const (
-	// FILENAME is the configuration file name
-	FILENAME = "configuration.json"
-	// PRODUCTIONENV is used to recognise if we are in production or not
-	PRODUCTIONENV = "production"
-	// DBDOCKERHOST is the DB docker container name
-	DBDOCKERHOST = "db"
+	"os"
 )
 
 // Configuration embeds full configuration
 type Configuration struct {
-	Environment string  `json:"ENVIRONMENT"`
-	GinMode     string  `json:"GIN_MODE"`
-	Server      *Server `json:"SERVER"`
-	Psql        *Psql   `json:"PSQL"`
+	Server *Server
+	Psql   *Psql
 }
 
 // Server embeds server configuration
 type Server struct {
-	Host string `json:"HOST"`
-	Port string `json:"PORT"`
+	Host    string
+	Port    string
+	GinMode string
 }
 
 // Psql embeds Postgresql configuration
 type Psql struct {
-	DriverName string `json:"DRIVER"`
-	DBName     string `json:"DBNAME"`
-	User       string `json:"USER"`
-	Host       string `json:"HOST"`
-	SSLMode    string `json:"SSL"`
+	DriverName string
+	DBName     string
+	User       string
+	Host       string
+	SSLMode    string
 }
 
 // GetConfiguration loads configuration from JSON file
 // and returns it, or it returns an error
-func GetConfiguration() (*Configuration, error) {
+func GetConfiguration() *Configuration {
 
-	configuration := &Configuration{}
-
-	_, dirname, _, _ := runtime.Caller(0)
-	filePath := path.Join(filepath.Dir(dirname), FILENAME)
-
-	if err := gonfig.GetConf(filePath, configuration); err != nil {
-		return nil, errors.Wrapf(err, "Error loading configuration file")
+	return &Configuration{
+		Server: &Server{
+			GinMode: os.Getenv("SERVER_GIN_MODE"),
+			Host:    os.Getenv("SERVER_HOST"),
+			Port:    os.Getenv("SERVER_PORT"),
+		},
+		Psql: &Psql{
+			DriverName: os.Getenv("PSQL_DRIVER_NAME"),
+			DBName:     os.Getenv("PSQL_DB_NAME"),
+			User:       os.Getenv("PSQL_USER"),
+			Host:       os.Getenv("PSQL_HOST"),
+			SSLMode:    os.Getenv("PSQL_SSL_MODE"),
+		},
 	}
-
-	if configuration.Environment == PRODUCTIONENV {
-		configuration.Psql.Host = DBDOCKERHOST
-	}
-
-	return configuration, nil
 }

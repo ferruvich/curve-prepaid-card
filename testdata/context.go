@@ -13,11 +13,10 @@ func GetMockContext(t *testing.T) context.Context {
 	t.Helper()
 
 	conf := &configuration.Configuration{
-		GinMode:     "debug",
-		Environment: "development",
 		Server: &configuration.Server{
-			Host: "localhost",
-			Port: "8080",
+			GinMode: "debug",
+			Host:    "localhost",
+			Port:    "8080",
 		},
 		Psql: &configuration.Psql{
 			DriverName: "postgres",

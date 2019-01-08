@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -12,13 +13,9 @@ import (
 )
 
 func main() {
-	cfg, err := configuration.GetConfiguration()
-	if err != nil {
-		fmt.Printf("%+v", err)
-		return
-	}
+	cfg := configuration.GetConfiguration()
 
-	if cfg.GinMode == "release" {
+	if cfg.Server.GinMode == "release" {
 		gin.SetMode(gin.ReleaseMode)
 	}
 	router := gin.Default()
@@ -31,14 +28,12 @@ func main() {
 	// User handler
 	userHandler, err := handler.NewUserHandler(ctx)
 	if err != nil {
-		fmt.Printf("%+v", err)
-		return
+		log.Fatalf("%+v", err)
 	}
 	// Merchant Handler
 	merchantHandler, err := handler.NewMerchantHandler(ctx)
 	if err != nil {
-		fmt.Printf("%+v", err)
-		return
+		log.Fatalf("%+v", err)
 	}
 	// Card Handler
 	cardHandler, err := handler.NewCardHandler(ctx)

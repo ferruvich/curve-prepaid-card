@@ -17,6 +17,15 @@ services:
       - .:/go/src/github.com/ferruvich/curve-challenge
     ports:
       - '8080:8080'
+    environment:
+      SERVER_GIN_MODE: debug
+      SERVER_HOST: "0.0.0.0"
+      SERVER_PORT: "8080"
+      PSQL_DRIVER_NAME: postgres
+      PSQL_DB_NAME: curve
+      PSQL_USER: postgres
+      PSQL_HOST: db
+      PSQL_SSL_MODE: disable
     depends_on:
       - db
     links:
