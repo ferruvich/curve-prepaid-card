@@ -36,7 +36,7 @@ func (m *Card) Create(ctx context.Context) func(c *gin.Context) {
 
 		userID := c.Param("userID")
 
-		merchant, err := m.middleware.Create(ctx, userID)
+		card, err := m.middleware.Create(ctx, userID)
 		if err != nil {
 			fmt.Printf("%+v", err)
 			c.JSON(http.StatusInternalServerError, ErrorMessage{
@@ -45,7 +45,26 @@ func (m *Card) Create(ctx context.Context) func(c *gin.Context) {
 			return
 		}
 
-		c.JSON(http.StatusCreated, merchant)
+		c.JSON(http.StatusCreated, card)
+	}
+}
+
+// GetCard is the HTTP handler of the GET /card/:id
+func (m *Card) GetCard(ctx context.Context) func(c *gin.Context) {
+	return func(c *gin.Context) {
+
+		cardID := c.Param("cardID")
+
+		card, err := m.middleware.GetCard(ctx, cardID)
+		if err != nil {
+			fmt.Printf("%+v", err)
+			c.JSON(http.StatusInternalServerError, ErrorMessage{
+				Error: "create card failed",
+			})
+			return
+		}
+
+		c.JSON(http.StatusOK, card)
 	}
 }
 

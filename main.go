@@ -45,6 +45,7 @@ func main() {
 	// Routes
 	router.POST("/user", userHandler.Create(ctx))
 	router.POST("/user/:userID/card", cardHandler.Create(ctx))
+	router.GET("/user/:userID/card/:cardID", cardHandler.GetCard(ctx))
 	router.POST("/user/:userID/card/:cardID/topup", cardHandler.TopUp(ctx))
 	router.POST("/merchant", merchantHandler.Create(ctx))
 
