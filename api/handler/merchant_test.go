@@ -13,6 +13,5 @@ func TestNewMerchantHandler(t *testing.T) {
 
 	require.NotNil(t, merchant)
 	require.NoError(t, err)
-	require.IsType(t, &Merchant{}, merchant)
-	require.NotNil(t, merchant.(*Merchant).middleware)
+	require.NotNil(t, merchant.middleware)
 }

@@ -13,6 +13,5 @@ func TestNewCardHandler(t *testing.T) {
 
 	require.NotNil(t, card)
 	require.NoError(t, err)
-	require.IsType(t, &Card{}, card)
-	require.NotNil(t, card.(*Card).middleware)
+	require.NotNil(t, card.middleware)
 }

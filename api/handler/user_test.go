@@ -13,6 +13,5 @@ func TestNewUserHandler(t *testing.T) {
 
 	require.NotNil(t, user)
 	require.NoError(t, err)
-	require.IsType(t, &User{}, user)
-	require.NotNil(t, user.(*User).middleware)
+	require.NotNil(t, user.middleware)
 }

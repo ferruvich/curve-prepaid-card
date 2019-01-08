@@ -16,7 +16,7 @@ type User struct {
 }
 
 // NewUserHandler returns a newly created user handler
-func NewUserHandler(ctx context.Context) (Handler, error) {
+func NewUserHandler(ctx context.Context) (*User, error) {
 	middleware, err := middleware.NewUserMiddleware(ctx)
 	if err != nil {
 		return nil, err

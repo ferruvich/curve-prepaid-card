@@ -21,7 +21,7 @@ type TopUpRequest struct {
 }
 
 // NewCardHandler returns a newly created card handler
-func NewCardHandler(ctx context.Context) (Handler, error) {
+func NewCardHandler(ctx context.Context) (*Card, error) {
 	middleware, err := middleware.NewCardMiddleware(ctx)
 	if err != nil {
 		return nil, err
@@ -59,8 +59,8 @@ func (m *Card) TopUp(ctx context.Context) func(c *gin.Context) {
 		err := c.BindJSON(request)
 		if err != nil {
 			fmt.Printf("%+v", err)
-			c.JSON(http.StatusInternalServerError, ErrorMessage{
-				Error: "topup card failed",
+			c.JSON(http.StatusBadRequest, ErrorMessage{
+				Error: "bad request",
 			})
 			return
 		}

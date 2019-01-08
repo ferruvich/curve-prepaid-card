@@ -16,7 +16,7 @@ type Merchant struct {
 }
 
 // NewMerchantHandler returns a newly created merchant handler
-func NewMerchantHandler(ctx context.Context) (Handler, error) {
+func NewMerchantHandler(ctx context.Context) (*Merchant, error) {
 	middleware, err := middleware.NewMerchantMiddleware(ctx)
 	if err != nil {
 		return nil, err
