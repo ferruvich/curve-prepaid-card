@@ -68,8 +68,8 @@ func (m *Card) GetCard(ctx context.Context) func(c *gin.Context) {
 	}
 }
 
-// TopUp is the HTTP handler of the POST /card/:id/topup
-func (m *Card) TopUp(ctx context.Context) func(c *gin.Context) {
+// Deposit is the HTTP handler of the POST /card/:id/deposit
+func (m *Card) Deposit(ctx context.Context) func(c *gin.Context) {
 	return func(c *gin.Context) {
 
 		cardID := c.Param("cardID")
@@ -84,7 +84,7 @@ func (m *Card) TopUp(ctx context.Context) func(c *gin.Context) {
 			return
 		}
 
-		err = m.middleware.TopUp(ctx, cardID, request.Amount)
+		err = m.middleware.Deposit(ctx, cardID, request.Amount)
 		if err != nil {
 			fmt.Printf("%+v", err)
 			c.JSON(http.StatusInternalServerError, ErrorMessage{

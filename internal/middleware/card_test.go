@@ -13,9 +13,9 @@ import (
 )
 
 const (
-	ownerID     = "someUserID"
-	cardID      = "someCardID"
-	amountTopUp = 10.0
+	ownerID         = "someUserID"
+	cardID          = "someCardID"
+	amountToDeposit = 10.0
 )
 
 func TestNewCardMiddleware(t *testing.T) {
@@ -67,7 +67,7 @@ func TestCardMiddleware_GetCard(t *testing.T) {
 	require.Equal(t, card.ID, cardID)
 }
 
-func TestCardMiddleware_TopUp(t *testing.T) {
+func TestCardMiddleware_Deposit(t *testing.T) {
 
 	mockCard := &model.Card{
 		ID: cardID, AvailableBalance: 0.0, AccountBalance: 0.0,
@@ -87,9 +87,9 @@ func TestCardMiddleware_TopUp(t *testing.T) {
 	cardMiddleware := &CardMiddleware{
 		repo: mockCardRepo,
 	}
-	err := cardMiddleware.TopUp(context.Background(), cardID, amountTopUp)
+	err := cardMiddleware.Deposit(context.Background(), cardID, amountToDeposit)
 
 	require.NoError(t, err)
-	require.Equal(t, mockCard.AccountBalance, amountTopUp)
-	require.Equal(t, mockCard.AvailableBalance, amountTopUp)
+	require.Equal(t, mockCard.AccountBalance, amountToDeposit)
+	require.Equal(t, mockCard.AvailableBalance, amountToDeposit)
 }
