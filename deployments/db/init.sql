@@ -1,4 +1,5 @@
 CREATE TYPE TRANSACTION_TYPE AS ENUM ('payment', 'refund');
+CREATE TYPE TRANSACTION_STATUS AS ENUM ('not_catched', 'partially_catched', 'completed');
 
 CREATE TABLE IF NOT EXISTS users(
     ID UUID PRIMARY KEY
@@ -21,7 +22,8 @@ CREATE TABLE IF NOT EXISTS transactions(
     receiver UUID,
     amount DOUBLE PRECISION,
     date TIMESTAMP,
-    type TRANSACTION_TYPE
+    type TRANSACTION_TYPE,
+    status TRANSACTION_STATUS
 );
 
 CREATE TABLE IF NOT EXISTS authorizations(
