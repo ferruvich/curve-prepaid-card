@@ -11,6 +11,7 @@ import (
 type Card interface {
 	Create(context.Context, string) (*model.Card, error)
 	GetCard(context.Context, string) (*model.Card, error)
+	TopUp(context.Context, string, float64) error
 }
 
 // CardMiddleware is the Card implementation
@@ -57,6 +58,18 @@ func (m *CardMiddleware) GetCard(ctx context.Context, cardID string) (*model.Car
 }
 
 // TopUp topups a card, adding some money
-func (m *CardMiddleware) TopUp(ctx context.Context, cardID string) (*model.Card, error) {
-	return nil, nil
+func (m *CardMiddleware) TopUp(ctx context.Context, cardID string, amount float64) error {
+
+	card, err := m.repo.Read(ctx, cardID)
+	if err != nil {
+		return err
+	}
+
+	card.IncrementAccountBalance(amount)
+
+	if err = m.repo.Write(ctx, card); err != nil {
+		return err
+	}
+
+	return nil
 }
