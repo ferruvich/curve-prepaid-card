@@ -6,10 +6,9 @@ package repo
 
 import (
 	context "context"
-	reflect "reflect"
-
 	model "github.com/ferruvich/curve-challenge/internal/model"
 	gomock "github.com/golang/mock/gomock"
+	reflect "reflect"
 )
 
 // MockUser is a mock of User interface

@@ -6,10 +6,9 @@ package repo
 
 import (
 	context "context"
-	reflect "reflect"
-
 	model "github.com/ferruvich/curve-challenge/internal/model"
 	gomock "github.com/golang/mock/gomock"
+	reflect "reflect"
 )
 
 // MockCard is a mock of Card interface
@@ -33,6 +32,32 @@ func NewMockCard(ctrl *gomock.Controller) *MockCard {
 // EXPECT returns an object that allows the caller to indicate expected use
 func (m *MockCard) EXPECT() *MockCardMockRecorder {
 	return m.recorder
+}
+
+// Read mocks base method
+func (m *MockCard) Read(arg0 context.Context, arg1 string) (*model.Card, error) {
+	ret := m.ctrl.Call(m, "Read", arg0, arg1)
+	ret0, _ := ret[0].(*model.Card)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Read indicates an expected call of Read
+func (mr *MockCardMockRecorder) Read(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Read", reflect.TypeOf((*MockCard)(nil).Read), arg0, arg1)
+}
+
+// Update mocks base method
+func (m *MockCard) Update(arg0 context.Context, arg1 *model.Card) (*model.Card, error) {
+	ret := m.ctrl.Call(m, "Update", arg0, arg1)
+	ret0, _ := ret[0].(*model.Card)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Update indicates an expected call of Update
+func (mr *MockCardMockRecorder) Update(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockCard)(nil).Update), arg0, arg1)
 }
 
 // Write mocks base method
