@@ -49,26 +49,9 @@ func (ar *AuthorizationRequestRepo) Write(ctx context.Context, authReq *model.Au
 			"INSERT INTO authorizations(ID,merchant,card,amount,reversed) VALUES ($1,$2,$3,$4,$5)",
 			authReq.ID, authReq.Merchant, authReq.Card, authReq.Amount, authReq.Reversed,
 		),
-		psql.NewPipelineStmt(
-			"SELECT * FROM merchants WHERE ID = $1", authReq.Merchant,
-		),
-		psql.NewPipelineStmt(
-			"SELECT * FROM cards WHERE ID = $1", authReq.Card,
-		),
 	}
 
 	_, err := psql.WithTransaction(ar.dbConnection, func(tx psql.Transaction) (*sql.Rows, error) {
-		res, err := psql.RunPipeline(tx, statements[1:]...)
-		if !res.Next() {
-			return nil, errors.Errorf("element not found")
-		}
-		return res, err
-	})
-	if err != nil {
-		return err
-	}
-
-	_, err = psql.WithTransaction(ar.dbConnection, func(tx psql.Transaction) (*sql.Rows, error) {
 		_, err := psql.RunPipeline(tx, statements[0])
 		return nil, err
 	})
