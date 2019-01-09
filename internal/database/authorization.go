@@ -1,4 +1,4 @@
-package repo
+package database
 
 import (
 	context "context"
@@ -10,21 +10,21 @@ import (
 	"github.com/pkg/errors"
 )
 
-//go:generate mockgen -destination=authorization_mock.go -package=repo github.com/ferruvich/curve-prepaid-card/internal/repo AuthorizationRequest
+//go:generate mockgen -destination=authorization_mock.go -package=database github.com/ferruvich/curve-prepaid-card/internal/database AuthorizationRequest
 
 // AuthorizationRequest is the interface that contains all DB function for cards
 type AuthorizationRequest interface {
 	Write(context.Context, *model.AuthorizationRequest) error
 }
 
-// AuthorizationRequestRepo handler card operations in DB
-type AuthorizationRequestRepo struct {
+// AuthorizationRequestdatabase handler card operations in DB
+type AuthorizationRequestdatabase struct {
 	dbConnection *sql.DB
 }
 
-// NewAuthorizationRequestRepo initialize the db connection and
+// NewAuthorizationRequestdatabase initialize the db connection and
 // returns the initialized structure
-func NewAuthorizationRequestRepo(ctx context.Context) (AuthorizationRequest, error) {
+func NewAuthorizationRequestdatabase(ctx context.Context) (AuthorizationRequest, error) {
 
 	cfg, ok := ctx.Value("cfg").(*configuration.Configuration)
 	if !ok {
@@ -36,13 +36,13 @@ func NewAuthorizationRequestRepo(ctx context.Context) (AuthorizationRequest, err
 		return nil, errors.Wrap(err, "error initializing db connection")
 	}
 
-	return &AuthorizationRequestRepo{
+	return &AuthorizationRequestdatabase{
 		dbConnection: db,
 	}, nil
 }
 
 // Write writes a new card on DB
-func (ar *AuthorizationRequestRepo) Write(ctx context.Context, authReq *model.AuthorizationRequest) error {
+func (ar *AuthorizationRequestdatabase) Write(ctx context.Context, authReq *model.AuthorizationRequest) error {
 
 	statements := []*psql.PipelineStmt{
 		psql.NewPipelineStmt(

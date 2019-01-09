@@ -3,7 +3,7 @@ package middleware
 import (
 	"context"
 
-	"github.com/ferruvich/curve-prepaid-card/internal/repo"
+	"github.com/ferruvich/curve-prepaid-card/internal/database"
 
 	"github.com/ferruvich/curve-prepaid-card/internal/model"
 )
@@ -15,18 +15,18 @@ type AuthorizationRequest interface {
 
 // AuthorizationRequestMiddleware is the AuthorizationRequest implementation
 type AuthorizationRequestMiddleware struct {
-	repo repo.AuthorizationRequest
+	database database.AuthorizationRequest
 }
 
 // NewAuthorizationRequestMiddleware returns a new AuthorizationRequest
 func NewAuthorizationRequestMiddleware(ctx context.Context) (AuthorizationRequest, error) {
-	repo, err := repo.NewAuthorizationRequestRepo(ctx)
+	database, err := database.NewAuthorizationRequestdatabase(ctx)
 	if err != nil {
 		return nil, err
 	}
 
 	return &AuthorizationRequestMiddleware{
-		repo: repo,
+		database: database,
 	}, nil
 }
 
@@ -42,7 +42,7 @@ func (ar *AuthorizationRequestMiddleware) Create(
 		return nil, err
 	}
 
-	if err = ar.repo.Write(ctx, authReq); err != nil {
+	if err = ar.database.Write(ctx, authReq); err != nil {
 		return nil, err
 	}
 

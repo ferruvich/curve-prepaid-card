@@ -7,8 +7,8 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 
+	"github.com/ferruvich/curve-prepaid-card/internal/database"
 	"github.com/ferruvich/curve-prepaid-card/internal/model"
-	"github.com/ferruvich/curve-prepaid-card/internal/repo"
 	"github.com/ferruvich/curve-prepaid-card/testdata"
 )
 
@@ -30,14 +30,14 @@ func TestCardMiddleware_Create(t *testing.T) {
 	controller := gomock.NewController(t)
 	defer controller.Finish()
 
-	mockCardRepo := repo.NewMockCard(controller)
-	mockCardRepo.EXPECT().Write(
+	mockCarddatabase := database.NewMockCard(controller)
+	mockCarddatabase.EXPECT().Write(
 		context.Background(),
 		gomock.Any(),
 	).Return(nil)
 
 	cardMiddleware := &CardMiddleware{
-		repo: mockCardRepo,
+		database: mockCarddatabase,
 	}
 	card, err := cardMiddleware.Create(context.Background(), ownerID)
 
@@ -50,15 +50,15 @@ func TestCardMiddleware_GetCard(t *testing.T) {
 	controller := gomock.NewController(t)
 	defer controller.Finish()
 
-	mockCardRepo := repo.NewMockCard(controller)
-	mockCardRepo.EXPECT().Read(
+	mockCarddatabase := database.NewMockCard(controller)
+	mockCarddatabase.EXPECT().Read(
 		context.Background(), cardID,
 	).Return(&model.Card{
 		ID: cardID,
 	}, nil)
 
 	cardMiddleware := &CardMiddleware{
-		repo: mockCardRepo,
+		database: mockCarddatabase,
 	}
 	card, err := cardMiddleware.GetCard(context.Background(), cardID)
 
@@ -76,16 +76,16 @@ func TestCardMiddleware_Deposit(t *testing.T) {
 	controller := gomock.NewController(t)
 	defer controller.Finish()
 
-	mockCardRepo := repo.NewMockCard(controller)
-	mockCardRepo.EXPECT().Read(
+	mockCarddatabase := database.NewMockCard(controller)
+	mockCarddatabase.EXPECT().Read(
 		context.Background(), cardID,
 	).Return(mockCard, nil)
-	mockCardRepo.EXPECT().Update(
+	mockCarddatabase.EXPECT().Update(
 		context.Background(), mockCard,
 	).Return(nil)
 
 	cardMiddleware := &CardMiddleware{
-		repo: mockCardRepo,
+		database: mockCarddatabase,
 	}
 	err := cardMiddleware.Deposit(context.Background(), cardID, amountToDeposit)
 

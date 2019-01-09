@@ -7,7 +7,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 
-	"github.com/ferruvich/curve-prepaid-card/internal/repo"
+	"github.com/ferruvich/curve-prepaid-card/internal/database"
 	"github.com/ferruvich/curve-prepaid-card/testdata"
 )
 
@@ -28,14 +28,14 @@ func TestAuthorizationRequestMiddleware_Create(t *testing.T) {
 	controller := gomock.NewController(t)
 	defer controller.Finish()
 
-	mockCardRepo := repo.NewMockAuthorizationRequest(controller)
-	mockCardRepo.EXPECT().Write(
+	mockCarddatabase := database.NewMockAuthorizationRequest(controller)
+	mockCarddatabase.EXPECT().Write(
 		context.Background(),
 		gomock.Any(),
 	).Return(nil)
 
 	cardMiddleware := &AuthorizationRequestMiddleware{
-		repo: mockCardRepo,
+		database: mockCarddatabase,
 	}
 	card, err := cardMiddleware.Create(context.Background(), merchantID, cardID, amountToRequest)
 

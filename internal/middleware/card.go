@@ -3,8 +3,8 @@ package middleware
 import (
 	"context"
 
+	"github.com/ferruvich/curve-prepaid-card/internal/database"
 	"github.com/ferruvich/curve-prepaid-card/internal/model"
-	"github.com/ferruvich/curve-prepaid-card/internal/repo"
 )
 
 // Card represents the card middleware interface
@@ -16,18 +16,18 @@ type Card interface {
 
 // CardMiddleware is the Card implementation
 type CardMiddleware struct {
-	repo repo.Card
+	database database.Card
 }
 
 // NewCardMiddleware returns a new middleware for user
 func NewCardMiddleware(ctx context.Context) (Card, error) {
-	repo, err := repo.NewCardRepo(ctx)
+	database, err := database.NewCarddatabase(ctx)
 	if err != nil {
 		return nil, err
 	}
 
 	return &CardMiddleware{
-		repo: repo,
+		database: database,
 	}, nil
 }
 
@@ -39,7 +39,7 @@ func (m *CardMiddleware) Create(ctx context.Context, ownerID string) (*model.Car
 		return nil, err
 	}
 
-	if err = m.repo.Write(ctx, card); err != nil {
+	if err = m.database.Write(ctx, card); err != nil {
 		return nil, err
 	}
 
@@ -49,7 +49,7 @@ func (m *CardMiddleware) Create(ctx context.Context, ownerID string) (*model.Car
 // GetCard gets and returns an existing card, or an error if there is any
 func (m *CardMiddleware) GetCard(ctx context.Context, cardID string) (*model.Card, error) {
 
-	card, err := m.repo.Read(ctx, cardID)
+	card, err := m.database.Read(ctx, cardID)
 	if err != nil {
 		return nil, err
 	}
@@ -60,14 +60,14 @@ func (m *CardMiddleware) GetCard(ctx context.Context, cardID string) (*model.Car
 // Deposit topups a card, adding some money
 func (m *CardMiddleware) Deposit(ctx context.Context, cardID string, amount float64) error {
 
-	card, err := m.repo.Read(ctx, cardID)
+	card, err := m.database.Read(ctx, cardID)
 	if err != nil {
 		return err
 	}
 
 	card.IncrementAccountBalance(amount)
 
-	if err = m.repo.Update(ctx, card); err != nil {
+	if err = m.database.Update(ctx, card); err != nil {
 		return err
 	}
 

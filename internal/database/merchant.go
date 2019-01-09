@@ -1,4 +1,4 @@
-package repo
+package database
 
 import (
 	"context"
@@ -13,21 +13,21 @@ import (
 	"github.com/ferruvich/curve-prepaid-card/internal/psql"
 )
 
-//go:generate mockgen -destination=merchant_mock.go -package=repo github.com/ferruvich/curve-prepaid-card/internal/repo Merchant
+//go:generate mockgen -destination=merchant_mock.go -package=database github.com/ferruvich/curve-prepaid-card/internal/database Merchant
 
 // Merchant is the interface that contains all DB function for merchant
 type Merchant interface {
 	Write(context.Context, *model.Merchant) error
 }
 
-// MerchantRepo handler merchant operations in DB
-type MerchantRepo struct {
+// Merchantdatabase handler merchant operations in DB
+type Merchantdatabase struct {
 	dbConnection *sql.DB
 }
 
-// NewMerchantRepo initialize the db connection and
+// NewMerchantdatabase initialize the db connection and
 // returns the initialized structure
-func NewMerchantRepo(ctx context.Context) (Merchant, error) {
+func NewMerchantdatabase(ctx context.Context) (Merchant, error) {
 
 	cfg, ok := ctx.Value("cfg").(*configuration.Configuration)
 	if !ok {
@@ -39,13 +39,13 @@ func NewMerchantRepo(ctx context.Context) (Merchant, error) {
 		return nil, errors.Wrap(err, "error initializing db connection")
 	}
 
-	return &MerchantRepo{
+	return &Merchantdatabase{
 		dbConnection: db,
 	}, nil
 }
 
 // Write writes a new merchant on DB
-func (mr *MerchantRepo) Write(ctx context.Context, merchant *model.Merchant) error {
+func (mr *Merchantdatabase) Write(ctx context.Context, merchant *model.Merchant) error {
 
 	statements := []*psql.PipelineStmt{
 		psql.NewPipelineStmt("INSERT INTO merchants VALUES ($1)", merchant.ID),

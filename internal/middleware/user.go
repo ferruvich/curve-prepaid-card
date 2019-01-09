@@ -3,8 +3,8 @@ package middleware
 import (
 	"context"
 
+	"github.com/ferruvich/curve-prepaid-card/internal/database"
 	"github.com/ferruvich/curve-prepaid-card/internal/model"
-	"github.com/ferruvich/curve-prepaid-card/internal/repo"
 )
 
 // User represents the user middleware interface
@@ -15,18 +15,18 @@ type User interface {
 
 // UserMiddleware is the User implementation
 type UserMiddleware struct {
-	repo repo.User
+	database database.User
 }
 
 // NewUserMiddleware returns a new middleware for user
 func NewUserMiddleware(ctx context.Context) (User, error) {
-	repo, err := repo.NewUserRepo(ctx)
+	database, err := database.NewUserdatabase(ctx)
 	if err != nil {
 		return nil, err
 	}
 
 	return &UserMiddleware{
-		repo: repo,
+		database: database,
 	}, nil
 }
 
@@ -38,7 +38,7 @@ func (u *UserMiddleware) Create(ctx context.Context) (*model.User, error) {
 		return nil, err
 	}
 
-	if err = u.repo.Write(ctx, user); err != nil {
+	if err = u.database.Write(ctx, user); err != nil {
 		return nil, err
 	}
 
@@ -48,7 +48,7 @@ func (u *UserMiddleware) Create(ctx context.Context) (*model.User, error) {
 // Read returns an existing user
 func (u *UserMiddleware) Read(ctx context.Context, userID string) (*model.User, error) {
 
-	user, err := u.repo.Read(ctx, userID)
+	user, err := u.database.Read(ctx, userID)
 	if err != nil {
 		return nil, err
 	}

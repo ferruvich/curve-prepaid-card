@@ -1,4 +1,4 @@
-package repo
+package database
 
 import (
 	"context"
@@ -13,7 +13,7 @@ import (
 	"github.com/ferruvich/curve-prepaid-card/internal/psql"
 )
 
-//go:generate mockgen -destination=user_mock.go -package=repo github.com/ferruvich/curve-prepaid-card/internal/repo User
+//go:generate mockgen -destination=user_mock.go -package=database github.com/ferruvich/curve-prepaid-card/internal/database User
 
 // User is the interface that contains all DB function for user
 type User interface {
@@ -21,14 +21,14 @@ type User interface {
 	Read(context.Context, string) (*model.User, error)
 }
 
-// UserRepo handler user write operation in DB
-type UserRepo struct {
+// Userdatabase handler user write operation in DB
+type Userdatabase struct {
 	dbConnection *sql.DB
 }
 
-// NewUserRepo initialize the db connection and
+// NewUserdatabase initialize the db connection and
 // returns the initialized structure
-func NewUserRepo(ctx context.Context) (User, error) {
+func NewUserdatabase(ctx context.Context) (User, error) {
 
 	cfg, ok := ctx.Value("cfg").(*configuration.Configuration)
 	if !ok {
@@ -40,13 +40,13 @@ func NewUserRepo(ctx context.Context) (User, error) {
 		return nil, errors.Wrap(err, "error initializing db connection")
 	}
 
-	return &UserRepo{
+	return &Userdatabase{
 		dbConnection: db,
 	}, nil
 }
 
 // Write writes a new user on DB
-func (ur *UserRepo) Write(ctx context.Context, user *model.User) error {
+func (ur *Userdatabase) Write(ctx context.Context, user *model.User) error {
 
 	statements := []*psql.PipelineStmt{
 		psql.NewPipelineStmt("INSERT INTO users VALUES ($1)", user.ID),
@@ -64,7 +64,7 @@ func (ur *UserRepo) Write(ctx context.Context, user *model.User) error {
 }
 
 // Read reds a user from DB
-func (ur *UserRepo) Read(ctx context.Context, userID string) (*model.User, error) {
+func (ur *Userdatabase) Read(ctx context.Context, userID string) (*model.User, error) {
 
 	user := &model.User{}
 

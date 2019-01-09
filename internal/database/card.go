@@ -1,4 +1,4 @@
-package repo
+package database
 
 import (
 	context "context"
@@ -10,7 +10,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-//go:generate mockgen -destination=card_mock.go -package=repo github.com/ferruvich/curve-prepaid-card/internal/repo Card
+//go:generate mockgen -destination=card_mock.go -package=database github.com/ferruvich/curve-prepaid-card/internal/database Card
 
 // Card is the interface that contains all DB function for cards
 type Card interface {
@@ -19,14 +19,14 @@ type Card interface {
 	Read(context.Context, string) (*model.Card, error)
 }
 
-// CardRepo handler card operations in DB
-type CardRepo struct {
+// Carddatabase handler card operations in DB
+type Carddatabase struct {
 	dbConnection *sql.DB
 }
 
-// NewCardRepo initialize the db connection and
+// NewCarddatabase initialize the db connection and
 // returns the initialized structure
-func NewCardRepo(ctx context.Context) (Card, error) {
+func NewCarddatabase(ctx context.Context) (Card, error) {
 
 	cfg, ok := ctx.Value("cfg").(*configuration.Configuration)
 	if !ok {
@@ -38,13 +38,13 @@ func NewCardRepo(ctx context.Context) (Card, error) {
 		return nil, errors.Wrap(err, "error initializing db connection")
 	}
 
-	return &CardRepo{
+	return &Carddatabase{
 		dbConnection: db,
 	}, nil
 }
 
 // Write writes a new card on DB
-func (c *CardRepo) Write(ctx context.Context, card *model.Card) error {
+func (c *Carddatabase) Write(ctx context.Context, card *model.Card) error {
 
 	statements := []*psql.PipelineStmt{
 		psql.NewPipelineStmt(
@@ -65,7 +65,7 @@ func (c *CardRepo) Write(ctx context.Context, card *model.Card) error {
 }
 
 // Read reds a card from DB
-func (c *CardRepo) Read(ctx context.Context, cardID string) (*model.Card, error) {
+func (c *Carddatabase) Read(ctx context.Context, cardID string) (*model.Card, error) {
 
 	updatedCard := &model.Card{}
 	blockedAmount := 0.0
@@ -94,7 +94,7 @@ func (c *CardRepo) Read(ctx context.Context, cardID string) (*model.Card, error)
 }
 
 // Update updates a card in DB
-func (c *CardRepo) Update(ctx context.Context, card *model.Card) error {
+func (c *Carddatabase) Update(ctx context.Context, card *model.Card) error {
 
 	statements := []*psql.PipelineStmt{
 		psql.NewPipelineStmt(

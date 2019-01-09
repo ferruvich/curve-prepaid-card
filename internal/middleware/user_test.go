@@ -7,8 +7,8 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 
+	"github.com/ferruvich/curve-prepaid-card/internal/database"
 	"github.com/ferruvich/curve-prepaid-card/internal/model"
-	"github.com/ferruvich/curve-prepaid-card/internal/repo"
 	"github.com/ferruvich/curve-prepaid-card/testdata"
 )
 
@@ -28,14 +28,14 @@ func TestUserMiddleware_Create(t *testing.T) {
 	controller := gomock.NewController(t)
 	defer controller.Finish()
 
-	mockRepo := repo.NewMockUser(controller)
-	mockRepo.EXPECT().Write(
+	mockdatabase := database.NewMockUser(controller)
+	mockdatabase.EXPECT().Write(
 		context.Background(),
 		gomock.Any(),
 	).Return(nil)
 
 	userMiddleware := &UserMiddleware{
-		repo: mockRepo,
+		database: mockdatabase,
 	}
 
 	user, err := userMiddleware.Create(context.Background())
@@ -49,14 +49,14 @@ func TestUserMiddleware_Read(t *testing.T) {
 	controller := gomock.NewController(t)
 	defer controller.Finish()
 
-	mockRepo := repo.NewMockUser(controller)
-	mockRepo.EXPECT().Read(
+	mockdatabase := database.NewMockUser(controller)
+	mockdatabase.EXPECT().Read(
 		context.Background(),
 		userID,
 	).Return(&model.User{ID: userID}, nil)
 
 	userMiddleware := &UserMiddleware{
-		repo: mockRepo,
+		database: mockdatabase,
 	}
 
 	user, err := userMiddleware.Read(context.Background(), userID)
