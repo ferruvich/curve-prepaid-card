@@ -41,6 +41,12 @@ func main() {
 		fmt.Printf("%+v", err)
 		return
 	}
+	// AuthorizationRequest handler
+	authReqHandler, err := handler.NewAuthoziationRequestHandler(ctx)
+	if err != nil {
+		fmt.Printf("%+v", err)
+		return
+	}
 
 	// Routes
 	router.POST("/user", userHandler.Create(ctx))
@@ -48,6 +54,7 @@ func main() {
 	router.GET("/user/:userID/card/:cardID", cardHandler.GetCard(ctx))
 	router.POST("/user/:userID/card/:cardID/deposit", cardHandler.Deposit(ctx))
 	router.POST("/merchant", merchantHandler.Create(ctx))
+	router.POST("/authorization", authReqHandler.Create(ctx))
 
 	router.Run(strings.Join(
 		[]string{

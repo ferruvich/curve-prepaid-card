@@ -24,7 +24,7 @@ type AuthorizationRequestRepo struct {
 
 // NewAuthorizationRequestRepo initialize the db connection and
 // returns the initialized structure
-func NewAuthorizationRequestRepo(ctx context.Context) (Card, error) {
+func NewAuthorizationRequestRepo(ctx context.Context) (AuthorizationRequest, error) {
 
 	cfg, ok := ctx.Value("cfg").(*configuration.Configuration)
 	if !ok {
@@ -36,7 +36,7 @@ func NewAuthorizationRequestRepo(ctx context.Context) (Card, error) {
 		return nil, errors.Wrap(err, "error initializing db connection")
 	}
 
-	return &CardRepo{
+	return &AuthorizationRequestRepo{
 		dbConnection: db,
 	}, nil
 }
