@@ -8,12 +8,12 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/pkg/errors"
 
-	"github.com/ferruvich/curve-challenge/internal/configuration"
-	"github.com/ferruvich/curve-challenge/internal/model"
-	"github.com/ferruvich/curve-challenge/internal/psql"
+	"github.com/ferruvich/curve-prepaid-card/internal/configuration"
+	"github.com/ferruvich/curve-prepaid-card/internal/model"
+	"github.com/ferruvich/curve-prepaid-card/internal/psql"
 )
 
-//go:generate mockgen -destination=user_mock.go -package=repo github.com/ferruvich/curve-challenge/internal/repo User
+//go:generate mockgen -destination=user_mock.go -package=repo github.com/ferruvich/curve-prepaid-card/internal/repo User
 
 // User is the interface that contains all DB function for user
 type User interface {

@@ -7,8 +7,8 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 
-	"github.com/ferruvich/curve-challenge/internal/repo"
-	"github.com/ferruvich/curve-challenge/testdata"
+	"github.com/ferruvich/curve-prepaid-card/internal/repo"
+	"github.com/ferruvich/curve-prepaid-card/testdata"
 )
 
 func TestNewMerchantMiddleware(t *testing.T) {

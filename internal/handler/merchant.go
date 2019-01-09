@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/ferruvich/curve-challenge/internal/middleware"
+	"github.com/ferruvich/curve-prepaid-card/internal/middleware"
 )
 
 // Merchant represents the Merchant handler

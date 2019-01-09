@@ -4,7 +4,7 @@ import (
 	"database/sql"
 )
 
-//go:generate mockgen -destination=transaction_mock.go -package=psql github.com/ferruvich/curve-challenge/internal/psql Transaction
+//go:generate mockgen -destination=transaction_mock.go -package=psql github.com/ferruvich/curve-prepaid-card/internal/psql Transaction
 
 // Transaction is an interface that models the standard transaction in
 // `database/sql`.

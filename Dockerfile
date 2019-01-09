@@ -1,9 +1,9 @@
 FROM golang:alpine
 
 # Preparing workdir
-RUN mkdir -p /go/src/github.com/ferruvich/curve-challenge
-WORKDIR /go/src/github.com/ferruvich/curve-challenge
-ADD . /go/src/github.com/ferruvich/curve-challenge
+RUN mkdir -p /go/src/github.com/ferruvich/curve-prepaid-card
+WORKDIR /go/src/github.com/ferruvich/curve-prepaid-card
+ADD . /go/src/github.com/ferruvich/curve-prepaid-card
 
 # Force the go compiler to use modules
 ENV GO111MODULE=on

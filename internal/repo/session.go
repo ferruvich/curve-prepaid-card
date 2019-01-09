@@ -3,7 +3,7 @@ package repo
 import (
 	"fmt"
 
-	"github.com/ferruvich/curve-challenge/internal/configuration"
+	"github.com/ferruvich/curve-prepaid-card/internal/configuration"
 )
 
 // SESSIONSTRING represents the string skeleton of the session

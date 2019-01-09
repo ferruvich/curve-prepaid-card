@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/ferruvich/curve-challenge/internal/configuration"
+	"github.com/ferruvich/curve-prepaid-card/internal/configuration"
 )
 
 // GetMockContext returns prepared context for tests

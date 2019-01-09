@@ -14,7 +14,7 @@ services:
     # source https://github.com/vishnubob/wait-for-it
     command: ["./wait-for-it.sh", "db:5432", "--", "go", "run", "main.go"]
     volumes:
-      - .:/go/src/github.com/ferruvich/curve-challenge
+      - .:/go/src/github.com/ferruvich/curve-prepaid-card
     ports:
       - '8080:8080'
     environment:

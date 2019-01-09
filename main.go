@@ -8,8 +8,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/ferruvich/curve-challenge/internal/configuration"
-	"github.com/ferruvich/curve-challenge/internal/handler"
+	"github.com/ferruvich/curve-prepaid-card/internal/configuration"
+	"github.com/ferruvich/curve-prepaid-card/internal/handler"
 )
 
 func main() {

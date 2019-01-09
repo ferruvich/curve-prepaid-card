@@ -4,13 +4,13 @@ import (
 	context "context"
 	"database/sql"
 
-	"github.com/ferruvich/curve-challenge/internal/configuration"
-	"github.com/ferruvich/curve-challenge/internal/model"
-	"github.com/ferruvich/curve-challenge/internal/psql"
+	"github.com/ferruvich/curve-prepaid-card/internal/configuration"
+	"github.com/ferruvich/curve-prepaid-card/internal/model"
+	"github.com/ferruvich/curve-prepaid-card/internal/psql"
 	"github.com/pkg/errors"
 )
 
-//go:generate mockgen -destination=authorization_mock.go -package=repo github.com/ferruvich/curve-challenge/internal/repo AuthorizationRequest
+//go:generate mockgen -destination=authorization_mock.go -package=repo github.com/ferruvich/curve-prepaid-card/internal/repo AuthorizationRequest
 
 // AuthorizationRequest is the interface that contains all DB function for cards
 type AuthorizationRequest interface {

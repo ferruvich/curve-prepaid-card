@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/ferruvich/curve-challenge/testdata"
+	"github.com/ferruvich/curve-prepaid-card/testdata"
 )
 
 func TestNewMerchantRepo(t *testing.T) {

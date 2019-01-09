@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/ferruvich/curve-challenge/internal/middleware"
+	"github.com/ferruvich/curve-prepaid-card/internal/middleware"
 )
 
 // Card represents the Card handler
@@ -59,7 +59,7 @@ func (m *Card) GetCard(ctx context.Context) func(c *gin.Context) {
 		if err != nil {
 			fmt.Printf("%+v", err)
 			c.JSON(http.StatusInternalServerError, ErrorMessage{
-				Error: "create card failed",
+				Error: "get card failed",
 			})
 			return
 		}

@@ -3,8 +3,8 @@ package middleware
 import (
 	"context"
 
-	"github.com/ferruvich/curve-challenge/internal/model"
-	"github.com/ferruvich/curve-challenge/internal/repo"
+	"github.com/ferruvich/curve-prepaid-card/internal/model"
+	"github.com/ferruvich/curve-prepaid-card/internal/repo"
 )
 
 // User represents the user middleware interface

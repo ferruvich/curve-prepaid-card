@@ -8,12 +8,12 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/pkg/errors"
 
-	"github.com/ferruvich/curve-challenge/internal/configuration"
-	"github.com/ferruvich/curve-challenge/internal/model"
-	"github.com/ferruvich/curve-challenge/internal/psql"
+	"github.com/ferruvich/curve-prepaid-card/internal/configuration"
+	"github.com/ferruvich/curve-prepaid-card/internal/model"
+	"github.com/ferruvich/curve-prepaid-card/internal/psql"
 )
 
-//go:generate mockgen -destination=merchant_mock.go -package=repo github.com/ferruvich/curve-challenge/internal/repo Merchant
+//go:generate mockgen -destination=merchant_mock.go -package=repo github.com/ferruvich/curve-prepaid-card/internal/repo Merchant
 
 // Merchant is the interface that contains all DB function for merchant
 type Merchant interface {
