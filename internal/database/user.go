@@ -30,7 +30,7 @@ func (u *UserDataBase) Write(dbConnection *sql.DB, user *model.User) error {
 		u.service.newPipelineStmt("INSERT INTO users VALUES ($1)", user.ID),
 	}
 
-	_, err := u.service.withTransaction(dbConnection, func(tx transaction) (*sql.Rows, error) {
+	_, err := u.service.withTransaction(dbConnection, func(tx Transaction) (*sql.Rows, error) {
 		_, err := u.service.runPipeline(tx, statements...)
 		return nil, err
 	})
@@ -50,7 +50,7 @@ func (u *UserDataBase) Read(dbConnection *sql.DB, userID string) (*model.User, e
 		u.service.newPipelineStmt("SELECT * FROM users WHERE ID=$1", userID),
 	}
 
-	_, err := u.service.withTransaction(dbConnection, func(tx transaction) (*sql.Rows, error) {
+	_, err := u.service.withTransaction(dbConnection, func(tx Transaction) (*sql.Rows, error) {
 		res, err := u.service.runPipeline(tx, statements...)
 		if !res.Next() {
 			return nil, errors.Errorf("user not found")

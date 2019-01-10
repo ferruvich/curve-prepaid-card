@@ -6,16 +6,23 @@ import (
 	"github.com/pkg/errors"
 )
 
-// A pipelineStmt is a simple wrapper for creating a statement consisting of
-// a query and a set of arguments to be passed to that query.
+//go:generate mockgen -destination=pipeline_mock.go -package=database github.com/ferruvich/curve-prepaid-card/internal/database Pipeline
+
+// Pipeline is a simple wrapper for creating a statement
+type Pipeline interface {
+	makeQuery(Transaction) (*sql.Rows, error)
+}
+
+// pipelineStmt is the pipeline struct
+// consisting of a query and a set of arguments to be passed to that query.
 type pipelineStmt struct {
 	query string
 	args  []interface{}
 }
 
-// runPipeline runs the supplied statements within the transaction. If any statement fails, the transaction
+// runPipeline runs the supplied statements within the Transaction. If any statement fails, the Transaction
 // is rolled back, and the original error is returned.
-func (s *Service) runPipeline(tx transaction, stmts ...*pipelineStmt) (*sql.Rows, error) {
+func (s *Service) runPipeline(tx Transaction, stmts ...*pipelineStmt) (*sql.Rows, error) {
 	var res *sql.Rows
 	var err error
 
@@ -34,7 +41,7 @@ func (s *Service) newPipelineStmt(query string, args ...interface{}) *pipelineSt
 	return &pipelineStmt{query, args}
 }
 
-// makeQuery Executes the statement within supplied transaction, returning rows
-func (ps *pipelineStmt) makeQuery(tx transaction) (*sql.Rows, error) {
+// makeQuery Executes the statement within supplied Transaction, returning rows
+func (ps *pipelineStmt) makeQuery(tx Transaction) (*sql.Rows, error) {
 	return tx.Query(ps.query, ps.args...)
 }

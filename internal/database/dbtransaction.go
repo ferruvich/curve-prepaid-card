@@ -4,20 +4,22 @@ import (
 	"database/sql"
 )
 
-// transaction is an interface that models the standard transaction in
+//go:generate mockgen -destination=dbtransaction_mock.go -package=database github.com/ferruvich/curve-prepaid-card/internal/database Transaction
+
+// Transaction is an interface that models the standard Transaction in
 // `database/sql`.
-// To ensure funcs in withTransaction cannot commit or rollback a transaction (which is
+// To ensure funcs in withTransaction cannot commit or rollback a Transaction (which is
 // handled by `withTransaction`), those methods are not included here.
-type transaction interface {
+type Transaction interface {
 	Exec(query string, args ...interface{}) (sql.Result, error)
 	Prepare(query string) (*sql.Stmt, error)
 	Query(query string, args ...interface{}) (*sql.Rows, error)
 	QueryRow(query string, args ...interface{}) *sql.Row
 }
 
-// withTransaction creates a new transaction and handles rollback/commit based on the
+// withTransaction creates a new Transaction and handles rollback/commit based on the
 // error object returned by the function fn, and returns its response
-func (s *Service) withTransaction(db *sql.DB, fn func(transaction) (*sql.Rows, error)) (*sql.Rows, error) {
+func (s *Service) withTransaction(db *sql.DB, fn func(Transaction) (*sql.Rows, error)) (*sql.Rows, error) {
 	tx, err := db.Begin()
 	if err != nil {
 		return nil, err

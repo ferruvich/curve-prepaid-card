@@ -33,7 +33,7 @@ func (c *CardDataBase) Write(dbConnection *sql.DB, card *model.Card) error {
 	}
 
 	_, err := c.service.withTransaction(dbConnection,
-		func(tx transaction) (*sql.Rows, error) {
+		func(tx Transaction) (*sql.Rows, error) {
 			_, err := c.service.runPipeline(tx, statements[1])
 			return nil, err
 		})
@@ -55,7 +55,7 @@ func (c *CardDataBase) Read(dbConnection *sql.DB, cardID string) (*model.Card, e
 	}
 
 	_, err := c.service.withTransaction(dbConnection,
-		func(tx transaction) (*sql.Rows, error) {
+		func(tx Transaction) (*sql.Rows, error) {
 			res, err := c.service.runPipeline(tx, statements...)
 			if !res.Next() {
 				return nil, errors.Errorf("user not found")
@@ -85,7 +85,7 @@ func (c *CardDataBase) Update(dbConnection *sql.DB, card *model.Card) error {
 	}
 
 	_, err := c.service.withTransaction(dbConnection,
-		func(tx transaction) (*sql.Rows, error) {
+		func(tx Transaction) (*sql.Rows, error) {
 			res, err := c.service.runPipeline(tx, statements...)
 			return res, err
 		})
