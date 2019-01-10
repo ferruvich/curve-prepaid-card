@@ -29,8 +29,8 @@ type Service struct {
 	dbConnection *sql.DB
 }
 
-// NewDatabaseService returns a new DB service
-func NewDatabaseService(driverName, host, user, dbName, sslMode string) (DataBase, error) {
+// NewDataBaseService returns a new DB service
+func NewDataBaseService(driverName, host, user, dbName, sslMode string) (DataBase, error) {
 
 	session := fmt.Sprintf(
 		sessionTemplate, host, user, dbName, sslMode,
