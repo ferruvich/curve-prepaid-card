@@ -1,12 +1,10 @@
 package database
 
 import (
-	context "context"
 	"database/sql"
 
-	"github.com/ferruvich/curve-prepaid-card/internal/configuration"
 	"github.com/ferruvich/curve-prepaid-card/internal/model"
-	"github.com/ferruvich/curve-prepaid-card/internal/psql"
+
 	"github.com/pkg/errors"
 )
 
@@ -14,49 +12,31 @@ import (
 
 // Card is the interface that contains all DB function for cards
 type Card interface {
-	Write(context.Context, *model.Card) error
-	Update(context.Context, *model.Card) error
-	Read(context.Context, string) (*model.Card, error)
+	Write(*sql.DB, *model.Card) error
+	Update(*sql.DB, *model.Card) error
+	Read(*sql.DB, string) (*model.Card, error)
 }
 
-// Carddatabase handler card operations in DB
-type Carddatabase struct {
-	dbConnection *sql.DB
-}
-
-// NewCarddatabase initialize the db connection and
-// returns the initialized structure
-func NewCarddatabase(ctx context.Context) (Card, error) {
-
-	cfg, ok := ctx.Value("cfg").(*configuration.Configuration)
-	if !ok {
-		return nil, errors.Errorf("error loading configuration")
-	}
-
-	db, err := sql.Open(cfg.Psql.DriverName, newSessionString(*cfg))
-	if err != nil {
-		return nil, errors.Wrap(err, "error initializing db connection")
-	}
-
-	return &Carddatabase{
-		dbConnection: db,
-	}, nil
+// CardDataBase handler card operations in DB
+type CardDataBase struct {
+	service DataBase
 }
 
 // Write writes a new card on DB
-func (c *Carddatabase) Write(ctx context.Context, card *model.Card) error {
+func (c *CardDataBase) Write(dbConnection *sql.DB, card *model.Card) error {
 
-	statements := []*psql.PipelineStmt{
-		psql.NewPipelineStmt(
+	statements := []*pipelineStmt{
+		c.service.newPipelineStmt(
 			"INSERT INTO cards(ID,owner,account_balance,blocked_amount) VALUES ($1,$2,$3,$4)",
 			card.ID, card.Owner, card.AccountBalance, (card.AccountBalance - card.AvailableBalance),
 		),
 	}
 
-	_, err := psql.WithTransaction(c.dbConnection, func(tx psql.Transaction) (*sql.Rows, error) {
-		_, err := psql.RunPipeline(tx, statements[1])
-		return nil, err
-	})
+	_, err := c.service.withTransaction(dbConnection,
+		func(tx transaction) (*sql.Rows, error) {
+			_, err := c.service.runPipeline(tx, statements[1])
+			return nil, err
+		})
 	if err != nil {
 		return errors.Wrap(err, "error writing card")
 	}
@@ -65,27 +45,28 @@ func (c *Carddatabase) Write(ctx context.Context, card *model.Card) error {
 }
 
 // Read reds a card from DB
-func (c *Carddatabase) Read(ctx context.Context, cardID string) (*model.Card, error) {
+func (c *CardDataBase) Read(dbConnection *sql.DB, cardID string) (*model.Card, error) {
 
 	updatedCard := &model.Card{}
 	blockedAmount := 0.0
 
-	statements := []*psql.PipelineStmt{
-		psql.NewPipelineStmt("SELECT * FROM cards WHERE ID=$1", cardID),
+	statements := []*pipelineStmt{
+		c.service.newPipelineStmt("SELECT * FROM cards WHERE ID=$1", cardID),
 	}
 
-	_, err := psql.WithTransaction(c.dbConnection, func(tx psql.Transaction) (*sql.Rows, error) {
-		res, err := psql.RunPipeline(tx, statements...)
-		if !res.Next() {
-			return nil, errors.Errorf("user not found")
-		}
-		if err = res.Scan(&updatedCard.ID, &updatedCard.Owner,
-			&updatedCard.AccountBalance, &blockedAmount); err != nil {
-			return nil, errors.Wrap(err, "error building card struct")
-		}
-		updatedCard.AvailableBalance = updatedCard.AccountBalance - blockedAmount
-		return res, err
-	})
+	_, err := c.service.withTransaction(dbConnection,
+		func(tx transaction) (*sql.Rows, error) {
+			res, err := c.service.runPipeline(tx, statements...)
+			if !res.Next() {
+				return nil, errors.Errorf("user not found")
+			}
+			if err = res.Scan(&updatedCard.ID, &updatedCard.Owner,
+				&updatedCard.AccountBalance, &blockedAmount); err != nil {
+				return nil, errors.Wrap(err, "error building card struct")
+			}
+			updatedCard.AvailableBalance = updatedCard.AccountBalance - blockedAmount
+			return res, err
+		})
 	if err != nil {
 		return nil, errors.Wrap(err, "error reading card")
 	}
@@ -94,19 +75,20 @@ func (c *Carddatabase) Read(ctx context.Context, cardID string) (*model.Card, er
 }
 
 // Update updates a card in DB
-func (c *Carddatabase) Update(ctx context.Context, card *model.Card) error {
+func (c *CardDataBase) Update(dbConnection *sql.DB, card *model.Card) error {
 
-	statements := []*psql.PipelineStmt{
-		psql.NewPipelineStmt(
+	statements := []*pipelineStmt{
+		c.service.newPipelineStmt(
 			"UPDATE cards SET owner=$2, account_balance=$3, blocked_amount=$4 where ID=$1",
 			card.ID, card.Owner, card.AccountBalance, (card.AccountBalance - card.AvailableBalance),
 		),
 	}
 
-	_, err := psql.WithTransaction(c.dbConnection, func(tx psql.Transaction) (*sql.Rows, error) {
-		res, err := psql.RunPipeline(tx, statements...)
-		return res, err
-	})
+	_, err := c.service.withTransaction(dbConnection,
+		func(tx transaction) (*sql.Rows, error) {
+			res, err := c.service.runPipeline(tx, statements...)
+			return res, err
+		})
 	if err != nil {
 		return errors.Wrap(err, "error writing card")
 	}

@@ -5,7 +5,7 @@
 package database
 
 import (
-	context "context"
+	sql "database/sql"
 	model "github.com/ferruvich/curve-prepaid-card/internal/model"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
@@ -35,7 +35,7 @@ func (m *MockAuthorizationRequest) EXPECT() *MockAuthorizationRequestMockRecorde
 }
 
 // Write mocks base method
-func (m *MockAuthorizationRequest) Write(arg0 context.Context, arg1 *model.AuthorizationRequest) error {
+func (m *MockAuthorizationRequest) Write(arg0 *sql.DB, arg1 *model.AuthorizationRequest) error {
 	ret := m.ctrl.Call(m, "Write", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0

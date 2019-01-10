@@ -5,7 +5,7 @@
 package database
 
 import (
-	context "context"
+	sql "database/sql"
 	model "github.com/ferruvich/curve-prepaid-card/internal/model"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
@@ -35,7 +35,7 @@ func (m *MockCard) EXPECT() *MockCardMockRecorder {
 }
 
 // Read mocks base method
-func (m *MockCard) Read(arg0 context.Context, arg1 string) (*model.Card, error) {
+func (m *MockCard) Read(arg0 *sql.DB, arg1 string) (*model.Card, error) {
 	ret := m.ctrl.Call(m, "Read", arg0, arg1)
 	ret0, _ := ret[0].(*model.Card)
 	ret1, _ := ret[1].(error)
@@ -48,7 +48,7 @@ func (mr *MockCardMockRecorder) Read(arg0, arg1 interface{}) *gomock.Call {
 }
 
 // Update mocks base method
-func (m *MockCard) Update(arg0 context.Context, arg1 *model.Card) error {
+func (m *MockCard) Update(arg0 *sql.DB, arg1 *model.Card) error {
 	ret := m.ctrl.Call(m, "Update", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
@@ -60,7 +60,7 @@ func (mr *MockCardMockRecorder) Update(arg0, arg1 interface{}) *gomock.Call {
 }
 
 // Write mocks base method
-func (m *MockCard) Write(arg0 context.Context, arg1 *model.Card) error {
+func (m *MockCard) Write(arg0 *sql.DB, arg1 *model.Card) error {
 	ret := m.ctrl.Call(m, "Write", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0

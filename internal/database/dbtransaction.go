@@ -1,25 +1,23 @@
-package psql
+package database
 
 import (
 	"database/sql"
 )
 
-//go:generate mockgen -destination=transaction_mock.go -package=psql github.com/ferruvich/curve-prepaid-card/internal/psql Transaction
-
-// Transaction is an interface that models the standard transaction in
+// transaction is an interface that models the standard transaction in
 // `database/sql`.
-// To ensure funcs in WithTransaction cannot commit or rollback a transaction (which is
-// handled by `WithTransaction`), those methods are not included here.
-type Transaction interface {
+// To ensure funcs in withTransaction cannot commit or rollback a transaction (which is
+// handled by `withTransaction`), those methods are not included here.
+type transaction interface {
 	Exec(query string, args ...interface{}) (sql.Result, error)
 	Prepare(query string) (*sql.Stmt, error)
 	Query(query string, args ...interface{}) (*sql.Rows, error)
 	QueryRow(query string, args ...interface{}) *sql.Row
 }
 
-// WithTransaction creates a new transaction and handles rollback/commit based on the
+// withTransaction creates a new transaction and handles rollback/commit based on the
 // error object returned by the function fn, and returns its response
-func WithTransaction(db *sql.DB, fn func(Transaction) (*sql.Rows, error)) (*sql.Rows, error) {
+func (s *Service) withTransaction(db *sql.DB, fn func(transaction) (*sql.Rows, error)) (*sql.Rows, error) {
 	tx, err := db.Begin()
 	if err != nil {
 		return nil, err
