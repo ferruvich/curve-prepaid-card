@@ -34,7 +34,7 @@ func (c *CardDataBase) Write(card *model.Card) error {
 
 	_, err := c.service.withTransaction(c.service.GetConnection(),
 		func(tx Transaction) (*sql.Rows, error) {
-			_, err := c.service.runPipeline(tx, statements[1])
+			_, err := c.service.runPipeline(tx, statements...)
 			return nil, err
 		})
 	if err != nil {

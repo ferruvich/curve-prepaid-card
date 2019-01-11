@@ -30,20 +30,28 @@ func (s *Service) DataBase() database.DataBase {
 
 // AuthorizationRequest returns a new AuthorizationRequest middleware
 func (s *Service) AuthorizationRequest() AuthorizationRequest {
-	return &AuthorizationRequestMiddleware{}
+	return &AuthorizationRequestMiddleware{
+		middleware: s,
+	}
 }
 
 // Card returns a new Card middleware
 func (s *Service) Card() Card {
-	return &CardMiddleware{}
+	return &CardMiddleware{
+		middleware: s,
+	}
 }
 
 // Merchant returns a new Merchant middleware
 func (s *Service) Merchant() Merchant {
-	return &MerchantMiddleware{}
+	return &MerchantMiddleware{
+		middleware: s,
+	}
 }
 
 // User returns a new User middleware
 func (s *Service) User() User {
-	return &UserMiddleware{}
+	return &UserMiddleware{
+		middleware: s,
+	}
 }
