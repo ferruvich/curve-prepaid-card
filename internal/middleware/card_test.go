@@ -17,6 +17,7 @@ func TestCard_Create(t *testing.T) {
 
 	t.Run("should fail due to db error", func(t *testing.T) {
 		controller := gomock.NewController(t)
+		defer controller.Finish()
 
 		mockCardDB := database.NewMockCard(controller)
 		mockCardDB.EXPECT().Write(gomock.Any()).Return(
@@ -41,6 +42,7 @@ func TestCard_Create(t *testing.T) {
 
 	t.Run("should run", func(t *testing.T) {
 		controller := gomock.NewController(t)
+		defer controller.Finish()
 
 		mockCardDB := database.NewMockCard(controller)
 		mockCardDB.EXPECT().Write(gomock.Any()).Return(nil)
@@ -69,6 +71,7 @@ func TestCard_GetCard(t *testing.T) {
 
 	t.Run("should fail due to db error", func(t *testing.T) {
 		controller := gomock.NewController(t)
+		defer controller.Finish()
 
 		mockCardDB := database.NewMockCard(controller)
 		mockCardDB.EXPECT().Read(cardID).Return(
@@ -93,6 +96,7 @@ func TestCard_GetCard(t *testing.T) {
 
 	t.Run("should run", func(t *testing.T) {
 		controller := gomock.NewController(t)
+		defer controller.Finish()
 
 		mockCardDB := database.NewMockCard(controller)
 		mockCardDB.EXPECT().Read(cardID).Return(card, nil)
@@ -130,6 +134,7 @@ func TestCard_Deposit(t *testing.T) {
 		}
 
 		controller := gomock.NewController(t)
+		defer controller.Finish()
 
 		mockCardDB := database.NewMockCard(controller)
 		mockCardDB.EXPECT().Read(card.ID).Return(card, nil)
@@ -166,6 +171,7 @@ func TestCard_Deposit(t *testing.T) {
 		}
 
 		controller := gomock.NewController(t)
+		defer controller.Finish()
 
 		mockCardDB := database.NewMockCard(controller)
 		mockCardDB.EXPECT().Read(card.ID).Return(card, nil)

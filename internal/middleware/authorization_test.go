@@ -13,6 +13,7 @@ import (
 func TestAuthorizationRequest_Create(t *testing.T) {
 	t.Run("should fail due to db error", func(t *testing.T) {
 		controller := gomock.NewController(t)
+		defer controller.Finish()
 
 		mockAuthReqDB := database.NewMockAuthorizationRequest(controller)
 		mockAuthReqDB.EXPECT().Write(gomock.Any()).Return(
@@ -39,6 +40,7 @@ func TestAuthorizationRequest_Create(t *testing.T) {
 
 	t.Run("should run", func(t *testing.T) {
 		controller := gomock.NewController(t)
+		defer controller.Finish()
 
 		mockAuthReqDB := database.NewMockAuthorizationRequest(controller)
 		mockAuthReqDB.EXPECT().Write(gomock.Any()).Return(

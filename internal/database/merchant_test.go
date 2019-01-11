@@ -18,6 +18,7 @@ func TestMerchant_Write(t *testing.T) {
 
 	t.Run("should return error due to error on db", func(t *testing.T) {
 		controller := gomock.NewController(t)
+		defer controller.Finish()
 
 		mockDB := NewMockDataBase(controller)
 
@@ -42,6 +43,7 @@ func TestMerchant_Write(t *testing.T) {
 
 	t.Run("should run", func(t *testing.T) {
 		controller := gomock.NewController(t)
+		defer controller.Finish()
 
 		mockDB := NewMockDataBase(controller)
 

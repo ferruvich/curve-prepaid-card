@@ -16,6 +16,7 @@ func TestDataBase_RunPipeline(t *testing.T) {
 
 	t.Run("should fail due to error in makeQuery", func(t *testing.T) {
 		controller := gomock.NewController(t)
+		defer controller.Finish()
 
 		mockTransaction := NewMockTransaction(controller)
 		mockTransaction.EXPECT().Query(gomock.Any()).Return(
@@ -35,6 +36,7 @@ func TestDataBase_RunPipeline(t *testing.T) {
 
 	t.Run("should run", func(t *testing.T) {
 		controller := gomock.NewController(t)
+		defer controller.Finish()
 
 		mockTransaction := NewMockTransaction(controller)
 		mockTransaction.EXPECT().Query(gomock.Any()).Return(
@@ -69,6 +71,7 @@ func TestPipeline_MakeQuery(t *testing.T) {
 
 	t.Run("should fail due to error in makeQuery", func(t *testing.T) {
 		controller := gomock.NewController(t)
+		defer controller.Finish()
 
 		mockTransaction := NewMockTransaction(controller)
 		mockTransaction.EXPECT().Query(gomock.Any()).Return(
@@ -87,6 +90,7 @@ func TestPipeline_MakeQuery(t *testing.T) {
 
 	t.Run("should run", func(t *testing.T) {
 		controller := gomock.NewController(t)
+		defer controller.Finish()
 
 		mockTransaction := NewMockTransaction(controller)
 		mockTransaction.EXPECT().Query(gomock.Any()).Return(

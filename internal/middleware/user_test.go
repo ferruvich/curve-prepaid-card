@@ -15,6 +15,7 @@ func TestUser_Create(t *testing.T) {
 
 	t.Run("should fail due to db error", func(t *testing.T) {
 		controller := gomock.NewController(t)
+		defer controller.Finish()
 
 		mockUserDB := database.NewMockUser(controller)
 		mockUserDB.EXPECT().Write(gomock.Any()).Return(
@@ -39,6 +40,7 @@ func TestUser_Create(t *testing.T) {
 
 	t.Run("should run", func(t *testing.T) {
 		controller := gomock.NewController(t)
+		defer controller.Finish()
 
 		mockUserDB := database.NewMockUser(controller)
 		mockUserDB.EXPECT().Write(gomock.Any()).Return(nil)
@@ -67,6 +69,7 @@ func TestUser_Read(t *testing.T) {
 
 	t.Run("should fail due to db error", func(t *testing.T) {
 		controller := gomock.NewController(t)
+		defer controller.Finish()
 
 		mockUserDB := database.NewMockUser(controller)
 		mockUserDB.EXPECT().Read(userID).Return(nil, errors.New("error"))
@@ -89,6 +92,7 @@ func TestUser_Read(t *testing.T) {
 
 	t.Run("should run", func(t *testing.T) {
 		controller := gomock.NewController(t)
+		defer controller.Finish()
 
 		mockUserDB := database.NewMockUser(controller)
 		mockUserDB.EXPECT().Read(userID).Return(user, nil)
