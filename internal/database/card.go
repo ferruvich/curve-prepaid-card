@@ -12,9 +12,9 @@ import (
 
 // Card is the interface that contains all DB function for cards
 type Card interface {
-	Write(*sql.DB, *model.Card) error
-	Update(*sql.DB, *model.Card) error
-	Read(*sql.DB, string) (*model.Card, error)
+	Write(*model.Card) error
+	Update(*model.Card) error
+	Read(string) (*model.Card, error)
 }
 
 // CardDataBase handler card operations in DB
@@ -23,7 +23,7 @@ type CardDataBase struct {
 }
 
 // Write writes a new card on DB
-func (c *CardDataBase) Write(dbConnection *sql.DB, card *model.Card) error {
+func (c *CardDataBase) Write(card *model.Card) error {
 
 	statements := []*pipelineStmt{
 		c.service.newPipelineStmt(
@@ -32,7 +32,7 @@ func (c *CardDataBase) Write(dbConnection *sql.DB, card *model.Card) error {
 		),
 	}
 
-	_, err := c.service.withTransaction(dbConnection,
+	_, err := c.service.withTransaction(c.service.GetConnection(),
 		func(tx Transaction) (*sql.Rows, error) {
 			_, err := c.service.runPipeline(tx, statements[1])
 			return nil, err
@@ -45,7 +45,7 @@ func (c *CardDataBase) Write(dbConnection *sql.DB, card *model.Card) error {
 }
 
 // Read reds a card from DB
-func (c *CardDataBase) Read(dbConnection *sql.DB, cardID string) (*model.Card, error) {
+func (c *CardDataBase) Read(cardID string) (*model.Card, error) {
 
 	updatedCard := &model.Card{}
 	blockedAmount := 0.0
@@ -54,7 +54,7 @@ func (c *CardDataBase) Read(dbConnection *sql.DB, cardID string) (*model.Card, e
 		c.service.newPipelineStmt("SELECT * FROM cards WHERE ID=$1", cardID),
 	}
 
-	_, err := c.service.withTransaction(dbConnection,
+	_, err := c.service.withTransaction(c.service.GetConnection(),
 		func(tx Transaction) (*sql.Rows, error) {
 			res, err := c.service.runPipeline(tx, statements...)
 			if !res.Next() {
@@ -75,7 +75,7 @@ func (c *CardDataBase) Read(dbConnection *sql.DB, cardID string) (*model.Card, e
 }
 
 // Update updates a card in DB
-func (c *CardDataBase) Update(dbConnection *sql.DB, card *model.Card) error {
+func (c *CardDataBase) Update(card *model.Card) error {
 
 	statements := []*pipelineStmt{
 		c.service.newPipelineStmt(
@@ -84,7 +84,7 @@ func (c *CardDataBase) Update(dbConnection *sql.DB, card *model.Card) error {
 		),
 	}
 
-	_, err := c.service.withTransaction(dbConnection,
+	_, err := c.service.withTransaction(c.service.GetConnection(),
 		func(tx Transaction) (*sql.Rows, error) {
 			res, err := c.service.runPipeline(tx, statements...)
 			return res, err

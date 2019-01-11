@@ -14,6 +14,7 @@ import (
 func TestUser_Write(t *testing.T) {
 
 	user, _ := model.NewUser()
+	db := &sql.DB{}
 
 	t.Run("should return error due to error on db", func(t *testing.T) {
 		controller := gomock.NewController(t)
@@ -25,15 +26,16 @@ func TestUser_Write(t *testing.T) {
 		).Return(
 			&pipelineStmt{},
 		)
-		mockDB.EXPECT().withTransaction(&sql.DB{}, gomock.Any()).Return(
+		mockDB.EXPECT().withTransaction(db, gomock.Any()).Return(
 			nil, errors.New("error writing card"),
 		)
+		mockDB.EXPECT().GetConnection().Return(db)
 
 		userDB := &UserDataBase{
 			service: mockDB,
 		}
 
-		err := userDB.Write(&sql.DB{}, user)
+		err := userDB.Write(user)
 
 		require.Error(t, err)
 	})
@@ -48,15 +50,16 @@ func TestUser_Write(t *testing.T) {
 		).Return(
 			&pipelineStmt{},
 		)
-		mockDB.EXPECT().withTransaction(&sql.DB{}, gomock.Any()).Return(
+		mockDB.EXPECT().withTransaction(db, gomock.Any()).Return(
 			nil, nil,
 		)
+		mockDB.EXPECT().GetConnection().Return(db)
 
 		userDB := &UserDataBase{
 			service: mockDB,
 		}
 
-		err := userDB.Write(&sql.DB{}, user)
+		err := userDB.Write(user)
 
 		require.NoError(t, err)
 	})
@@ -65,6 +68,7 @@ func TestUser_Write(t *testing.T) {
 func TestMerechant_Read(t *testing.T) {
 
 	user := &model.User{ID: "id"}
+	db := &sql.DB{}
 
 	t.Run("should return error due to error on db", func(t *testing.T) {
 		controller := gomock.NewController(t)
@@ -76,15 +80,16 @@ func TestMerechant_Read(t *testing.T) {
 		).Return(
 			&pipelineStmt{},
 		)
-		mockDB.EXPECT().withTransaction(&sql.DB{}, gomock.Any()).Return(
+		mockDB.EXPECT().withTransaction(db, gomock.Any()).Return(
 			nil, errors.New("error writing card"),
 		)
+		mockDB.EXPECT().GetConnection().Return(db)
 
 		userDB := &UserDataBase{
 			service: mockDB,
 		}
 
-		resCard, err := userDB.Read(&sql.DB{}, "id")
+		resCard, err := userDB.Read("id")
 
 		require.Nil(t, resCard)
 		require.Error(t, err)
@@ -100,15 +105,16 @@ func TestMerechant_Read(t *testing.T) {
 		).Return(
 			&pipelineStmt{},
 		)
-		mockDB.EXPECT().withTransaction(&sql.DB{}, gomock.Any()).Return(
+		mockDB.EXPECT().withTransaction(db, gomock.Any()).Return(
 			nil, nil,
 		)
+		mockDB.EXPECT().GetConnection().Return(db)
 
 		userDB := &UserDataBase{
 			service: mockDB,
 		}
 
-		resCard, err := userDB.Read(&sql.DB{}, "id")
+		resCard, err := userDB.Read("id")
 
 		require.NotNil(t, resCard)
 		require.NoError(t, err)

@@ -1,7 +1,6 @@
-package handler
+package server
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 
@@ -11,8 +10,13 @@ import (
 )
 
 // AuthorizationRequest represents the Card handler
-type AuthorizationRequest struct {
-	middleware middleware.AuthorizationRequest
+type AuthorizationRequest interface {
+	Create() func(c *gin.Context)
+}
+
+// AuthorizationRequestHandler is the AuthorizationRequest struct
+type AuthorizationRequestHandler struct {
+	server Server
 }
 
 // AuthorizationRequestBody embeds a topup request body
@@ -22,18 +26,8 @@ type AuthorizationRequestBody struct {
 	Amount     float64 `json:"amount" binding:"required"`
 }
 
-// NewAuthoziationRequestHandler returns a newly created authorization request handler
-func NewAuthoziationRequestHandler(ctx context.Context) (*AuthorizationRequest, error) {
-	middleware, err := middleware.NewAuthorizationRequestMiddleware(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	return &AuthorizationRequest{middleware}, nil
-}
-
 // Create is the HTTP handler of the POST /card
-func (m *AuthorizationRequest) Create(ctx context.Context) func(c *gin.Context) {
+func (ar *AuthorizationRequestHandler) Create() func(c *gin.Context) {
 	return func(c *gin.Context) {
 
 		request := &AuthorizationRequestBody{}
@@ -46,7 +40,9 @@ func (m *AuthorizationRequest) Create(ctx context.Context) func(c *gin.Context) 
 			return
 		}
 
-		card, err := m.middleware.Create(ctx, request.MerchantID, request.CardID, request.Amount)
+		card, err := middleware.NewMiddleware(ar.server.DataBase()).AuthorizationRequest().Create(
+			request.MerchantID, request.CardID, request.Amount,
+		)
 		if err != nil {
 			fmt.Printf("%+v", err)
 			c.JSON(http.StatusInternalServerError, ErrorMessage{

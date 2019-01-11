@@ -1,7 +1,6 @@
-package handler
+package server
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 
@@ -11,32 +10,29 @@ import (
 )
 
 // Card represents the Card handler
-type Card struct {
-	middleware middleware.Card
+type Card interface {
+	Create() func(c *gin.Context)
+	GetCard() func(c *gin.Context)
+	Deposit() func(c *gin.Context)
 }
 
-// TopUpRequest embeds a topup request body
-type TopUpRequest struct {
+// CardHandler is the Card struct
+type CardHandler struct {
+	server Server
+}
+
+// DepositRequest embeds a deposit request body
+type DepositRequest struct {
 	Amount float64 `json:"amount" binding:"required"`
 }
 
-// NewCardHandler returns a newly created card handler
-func NewCardHandler(ctx context.Context) (*Card, error) {
-	middleware, err := middleware.NewCardMiddleware(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	return &Card{middleware}, nil
-}
-
 // Create is the HTTP handler of the POST /card
-func (m *Card) Create(ctx context.Context) func(c *gin.Context) {
+func (ch *CardHandler) Create() func(c *gin.Context) {
 	return func(c *gin.Context) {
 
 		userID := c.Param("userID")
 
-		card, err := m.middleware.Create(ctx, userID)
+		card, err := middleware.NewMiddleware(ch.server.DataBase()).Card().Create(userID)
 		if err != nil {
 			fmt.Printf("%+v", err)
 			c.JSON(http.StatusInternalServerError, ErrorMessage{
@@ -50,12 +46,12 @@ func (m *Card) Create(ctx context.Context) func(c *gin.Context) {
 }
 
 // GetCard is the HTTP handler of the GET /card/:id
-func (m *Card) GetCard(ctx context.Context) func(c *gin.Context) {
+func (ch *CardHandler) GetCard() func(c *gin.Context) {
 	return func(c *gin.Context) {
 
 		cardID := c.Param("cardID")
 
-		card, err := m.middleware.GetCard(ctx, cardID)
+		card, err := middleware.NewMiddleware(ch.server.DataBase()).Card().GetCard(cardID)
 		if err != nil {
 			fmt.Printf("%+v", err)
 			c.JSON(http.StatusInternalServerError, ErrorMessage{
@@ -69,12 +65,12 @@ func (m *Card) GetCard(ctx context.Context) func(c *gin.Context) {
 }
 
 // Deposit is the HTTP handler of the POST /card/:id/deposit
-func (m *Card) Deposit(ctx context.Context) func(c *gin.Context) {
+func (ch *CardHandler) Deposit() func(c *gin.Context) {
 	return func(c *gin.Context) {
 
 		cardID := c.Param("cardID")
 
-		request := &TopUpRequest{}
+		request := &DepositRequest{}
 		err := c.BindJSON(request)
 		if err != nil {
 			fmt.Printf("%+v", err)
@@ -84,7 +80,7 @@ func (m *Card) Deposit(ctx context.Context) func(c *gin.Context) {
 			return
 		}
 
-		err = m.middleware.Deposit(ctx, cardID, request.Amount)
+		err = middleware.NewMiddleware(ch.server.DataBase()).Card().Deposit(cardID, request.Amount)
 		if err != nil {
 			fmt.Printf("%+v", err)
 			c.JSON(http.StatusInternalServerError, ErrorMessage{

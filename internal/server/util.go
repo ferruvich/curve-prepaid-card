@@ -1,4 +1,4 @@
-package handler
+package server
 
 // ErrorMessage embeds a generic error message
 type ErrorMessage struct {

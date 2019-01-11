@@ -1,7 +1,6 @@
-package handler
+package server
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 
@@ -11,24 +10,19 @@ import (
 )
 
 // User represents the User handler
-type User struct {
-	middleware middleware.User
+type User interface {
+	Create() func(c *gin.Context)
 }
 
-// NewUserHandler returns a newly created user handler
-func NewUserHandler(ctx context.Context) (*User, error) {
-	middleware, err := middleware.NewUserMiddleware(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	return &User{middleware}, nil
+// UserHandler is the User struct
+type UserHandler struct {
+	server Server
 }
 
 // Create is the HTTP handler of the POST /user
-func (u *User) Create(ctx context.Context) func(c *gin.Context) {
+func (u *UserHandler) Create() func(c *gin.Context) {
 	return func(c *gin.Context) {
-		user, err := u.middleware.Create(ctx)
+		user, err := middleware.NewMiddleware(u.server.DataBase()).User().Create()
 		if err != nil {
 			fmt.Printf("%+v", err)
 			c.JSON(http.StatusInternalServerError, ErrorMessage{

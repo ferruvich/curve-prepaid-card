@@ -14,7 +14,7 @@ import (
 
 // Merchant is the interface that contains all DB function for merchant
 type Merchant interface {
-	Write(*sql.DB, *model.Merchant) error
+	Write(*model.Merchant) error
 }
 
 // MerchantDataBase handler merchant operations in DB
@@ -23,13 +23,13 @@ type MerchantDataBase struct {
 }
 
 // Write writes a new merchant on DB
-func (m *MerchantDataBase) Write(dbConnection *sql.DB, merchant *model.Merchant) error {
+func (m *MerchantDataBase) Write(merchant *model.Merchant) error {
 
 	statements := []*pipelineStmt{
 		m.service.newPipelineStmt("INSERT INTO merchants VALUES ($1)", merchant.ID),
 	}
 
-	_, err := m.service.withTransaction(dbConnection, func(tx Transaction) (*sql.Rows, error) {
+	_, err := m.service.withTransaction(m.service.GetConnection(), func(tx Transaction) (*sql.Rows, error) {
 		_, err := m.service.runPipeline(tx, statements...)
 		return nil, err
 	})

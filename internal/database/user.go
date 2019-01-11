@@ -14,8 +14,8 @@ import (
 
 // User is the interface that contains all DB function for user
 type User interface {
-	Write(*sql.DB, *model.User) error
-	Read(*sql.DB, string) (*model.User, error)
+	Write(*model.User) error
+	Read(string) (*model.User, error)
 }
 
 // UserDataBase handler user write operation in DB
@@ -24,13 +24,13 @@ type UserDataBase struct {
 }
 
 // Write writes a new user on DB
-func (u *UserDataBase) Write(dbConnection *sql.DB, user *model.User) error {
+func (u *UserDataBase) Write(user *model.User) error {
 
 	statements := []*pipelineStmt{
 		u.service.newPipelineStmt("INSERT INTO users VALUES ($1)", user.ID),
 	}
 
-	_, err := u.service.withTransaction(dbConnection, func(tx Transaction) (*sql.Rows, error) {
+	_, err := u.service.withTransaction(u.service.GetConnection(), func(tx Transaction) (*sql.Rows, error) {
 		_, err := u.service.runPipeline(tx, statements...)
 		return nil, err
 	})
@@ -42,7 +42,7 @@ func (u *UserDataBase) Write(dbConnection *sql.DB, user *model.User) error {
 }
 
 // Read reds a user from DB
-func (u *UserDataBase) Read(dbConnection *sql.DB, userID string) (*model.User, error) {
+func (u *UserDataBase) Read(userID string) (*model.User, error) {
 
 	user := &model.User{}
 
@@ -50,7 +50,7 @@ func (u *UserDataBase) Read(dbConnection *sql.DB, userID string) (*model.User, e
 		u.service.newPipelineStmt("SELECT * FROM users WHERE ID=$1", userID),
 	}
 
-	_, err := u.service.withTransaction(dbConnection, func(tx Transaction) (*sql.Rows, error) {
+	_, err := u.service.withTransaction(u.service.GetConnection(), func(tx Transaction) (*sql.Rows, error) {
 		res, err := u.service.runPipeline(tx, statements...)
 		if !res.Next() {
 			return nil, errors.Errorf("user not found")

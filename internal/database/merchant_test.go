@@ -14,6 +14,7 @@ import (
 func TestMerchant_Write(t *testing.T) {
 
 	merchant, _ := model.NewMerchant()
+	db := &sql.DB{}
 
 	t.Run("should return error due to error on db", func(t *testing.T) {
 		controller := gomock.NewController(t)
@@ -25,15 +26,16 @@ func TestMerchant_Write(t *testing.T) {
 		).Return(
 			&pipelineStmt{},
 		)
-		mockDB.EXPECT().withTransaction(&sql.DB{}, gomock.Any()).Return(
+		mockDB.EXPECT().withTransaction(db, gomock.Any()).Return(
 			nil, errors.New("error writing merchant"),
 		)
+		mockDB.EXPECT().GetConnection().Return(db)
 
 		merchantDB := &MerchantDataBase{
 			service: mockDB,
 		}
 
-		err := merchantDB.Write(&sql.DB{}, merchant)
+		err := merchantDB.Write(merchant)
 
 		require.Error(t, err)
 	})
@@ -48,15 +50,16 @@ func TestMerchant_Write(t *testing.T) {
 		).Return(
 			&pipelineStmt{},
 		)
-		mockDB.EXPECT().withTransaction(&sql.DB{}, gomock.Any()).Return(
+		mockDB.EXPECT().withTransaction(db, gomock.Any()).Return(
 			nil, nil,
 		)
+		mockDB.EXPECT().GetConnection().Return(db)
 
 		merchantDB := &MerchantDataBase{
 			service: mockDB,
 		}
 
-		err := merchantDB.Write(&sql.DB{}, merchant)
+		err := merchantDB.Write(merchant)
 
 		require.NoError(t, err)
 	})

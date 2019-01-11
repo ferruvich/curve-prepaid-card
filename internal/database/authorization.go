@@ -12,7 +12,7 @@ import (
 
 // AuthorizationRequest is the interface that contains all DB function for cards
 type AuthorizationRequest interface {
-	Write(*sql.DB, *model.AuthorizationRequest) error
+	Write(*model.AuthorizationRequest) error
 }
 
 // AuthorizationRequestDataBase handler card operations in DB
@@ -21,7 +21,7 @@ type AuthorizationRequestDataBase struct {
 }
 
 // Write writes a new card on DB
-func (a *AuthorizationRequestDataBase) Write(dbConnection *sql.DB, authReq *model.AuthorizationRequest) error {
+func (a *AuthorizationRequestDataBase) Write(authReq *model.AuthorizationRequest) error {
 
 	statements := []*pipelineStmt{
 		a.service.newPipelineStmt(
@@ -30,7 +30,7 @@ func (a *AuthorizationRequestDataBase) Write(dbConnection *sql.DB, authReq *mode
 		),
 	}
 
-	_, err := a.service.withTransaction(dbConnection,
+	_, err := a.service.withTransaction(a.service.GetConnection(),
 		func(tx Transaction) (*sql.Rows, error) {
 			_, err := a.service.runPipeline(tx, statements[0])
 			return nil, err

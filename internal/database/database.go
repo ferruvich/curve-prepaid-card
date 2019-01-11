@@ -18,6 +18,7 @@ type DataBase interface {
 	withTransaction(*sql.DB, func(Transaction) (*sql.Rows, error)) (*sql.Rows, error)
 	runPipeline(Transaction, ...*pipelineStmt) (*sql.Rows, error)
 	newPipelineStmt(string, ...interface{}) *pipelineStmt
+	GetConnection() *sql.DB
 	AuthorizationRequest() AuthorizationRequest
 	Card() Card
 	Merchant() Merchant
@@ -29,8 +30,8 @@ type Service struct {
 	dbConnection *sql.DB
 }
 
-// NewDataBaseService returns a new DB service
-func NewDataBaseService(driverName, host, user, dbName, sslMode string) (DataBase, error) {
+// NewDataBase returns a new DB service
+func NewDataBase(driverName, host, user, dbName, sslMode string) (DataBase, error) {
 
 	session := fmt.Sprintf(
 		sessionTemplate, host, user, dbName, sslMode,
@@ -42,6 +43,11 @@ func NewDataBaseService(driverName, host, user, dbName, sslMode string) (DataBas
 	}
 
 	return &Service{dbConnection: db}, nil
+}
+
+// GetConnection returns the db connection
+func (s *Service) GetConnection() *sql.DB {
+	return s.dbConnection
 }
 
 // AuthorizationRequest returns interface for user operations on DB

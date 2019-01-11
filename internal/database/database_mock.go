@@ -58,6 +58,18 @@ func (mr *MockDataBaseMockRecorder) Card() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Card", reflect.TypeOf((*MockDataBase)(nil).Card))
 }
 
+// GetConnection mocks base method
+func (m *MockDataBase) GetConnection() *sql.DB {
+	ret := m.ctrl.Call(m, "GetConnection")
+	ret0, _ := ret[0].(*sql.DB)
+	return ret0
+}
+
+// GetConnection indicates an expected call of GetConnection
+func (mr *MockDataBaseMockRecorder) GetConnection() *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetConnection", reflect.TypeOf((*MockDataBase)(nil).GetConnection))
+}
+
 // Merchant mocks base method
 func (m *MockDataBase) Merchant() Merchant {
 	ret := m.ctrl.Call(m, "Merchant")

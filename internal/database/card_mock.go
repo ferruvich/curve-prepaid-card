@@ -5,7 +5,6 @@
 package database
 
 import (
-	sql "database/sql"
 	model "github.com/ferruvich/curve-prepaid-card/internal/model"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
@@ -35,38 +34,38 @@ func (m *MockCard) EXPECT() *MockCardMockRecorder {
 }
 
 // Read mocks base method
-func (m *MockCard) Read(arg0 *sql.DB, arg1 string) (*model.Card, error) {
-	ret := m.ctrl.Call(m, "Read", arg0, arg1)
+func (m *MockCard) Read(arg0 string) (*model.Card, error) {
+	ret := m.ctrl.Call(m, "Read", arg0)
 	ret0, _ := ret[0].(*model.Card)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Read indicates an expected call of Read
-func (mr *MockCardMockRecorder) Read(arg0, arg1 interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Read", reflect.TypeOf((*MockCard)(nil).Read), arg0, arg1)
+func (mr *MockCardMockRecorder) Read(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Read", reflect.TypeOf((*MockCard)(nil).Read), arg0)
 }
 
 // Update mocks base method
-func (m *MockCard) Update(arg0 *sql.DB, arg1 *model.Card) error {
-	ret := m.ctrl.Call(m, "Update", arg0, arg1)
+func (m *MockCard) Update(arg0 *model.Card) error {
+	ret := m.ctrl.Call(m, "Update", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Update indicates an expected call of Update
-func (mr *MockCardMockRecorder) Update(arg0, arg1 interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockCard)(nil).Update), arg0, arg1)
+func (mr *MockCardMockRecorder) Update(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockCard)(nil).Update), arg0)
 }
 
 // Write mocks base method
-func (m *MockCard) Write(arg0 *sql.DB, arg1 *model.Card) error {
-	ret := m.ctrl.Call(m, "Write", arg0, arg1)
+func (m *MockCard) Write(arg0 *model.Card) error {
+	ret := m.ctrl.Call(m, "Write", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Write indicates an expected call of Write
-func (mr *MockCardMockRecorder) Write(arg0, arg1 interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Write", reflect.TypeOf((*MockCard)(nil).Write), arg0, arg1)
+func (mr *MockCardMockRecorder) Write(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Write", reflect.TypeOf((*MockCard)(nil).Write), arg0)
 }

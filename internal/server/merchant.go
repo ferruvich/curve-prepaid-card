@@ -1,7 +1,6 @@
-package handler
+package server
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 
@@ -11,24 +10,19 @@ import (
 )
 
 // Merchant represents the Merchant handler
-type Merchant struct {
-	middleware middleware.Merchant
+type Merchant interface {
+	Create() func(c *gin.Context)
 }
 
-// NewMerchantHandler returns a newly created merchant handler
-func NewMerchantHandler(ctx context.Context) (*Merchant, error) {
-	middleware, err := middleware.NewMerchantMiddleware(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	return &Merchant{middleware}, nil
+// MerchantHandler is the Merchant struct
+type MerchantHandler struct {
+	server Server
 }
 
 // Create is the HTTP handler of the POST /merchant
-func (m *Merchant) Create(ctx context.Context) func(c *gin.Context) {
+func (m *MerchantHandler) Create() func(c *gin.Context) {
 	return func(c *gin.Context) {
-		merchant, err := m.middleware.Create(ctx)
+		merchant, err := middleware.NewMiddleware(m.server.DataBase()).Merchant().Create()
 		if err != nil {
 			fmt.Printf("%+v", err)
 			c.JSON(http.StatusInternalServerError, ErrorMessage{
