@@ -4,6 +4,8 @@ import (
 	"github.com/ferruvich/curve-prepaid-card/internal/model"
 )
 
+//go:generate mockgen -destination=authorization_mock.go -source=authorization.go -package=middleware -self_package=. AuthorizationRequest
+
 // AuthorizationRequest represents the middleware of authorization requests
 type AuthorizationRequest interface {
 	Create(string, string, float64) (*model.AuthorizationRequest, error)

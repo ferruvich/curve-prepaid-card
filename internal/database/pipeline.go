@@ -6,7 +6,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-//go:generate mockgen -destination=pipeline_mock.go -package=database github.com/ferruvich/curve-prepaid-card/internal/database Pipeline
+//go:generate mockgen -destination=pipeline_mock.go -source=pipeline.go -package=database -self_package=. Pipeline
 
 // Pipeline is a simple wrapper for creating a statement
 type Pipeline interface {

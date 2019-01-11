@@ -2,6 +2,8 @@ package middleware
 
 import "github.com/ferruvich/curve-prepaid-card/internal/database"
 
+//go:generate mockgen -destination=middleware_mock.go -package=middleware -self_package=. -source=middleware.go Middleware
+
 // Middleware is the middlewares main interface
 type Middleware interface {
 	DataBase() database.DataBase

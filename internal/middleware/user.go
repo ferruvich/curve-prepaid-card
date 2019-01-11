@@ -4,6 +4,8 @@ import (
 	"github.com/ferruvich/curve-prepaid-card/internal/model"
 )
 
+//go:generate mockgen -destination=user_mock.go -source=user.go -package=middleware -self_package=. User
+
 // User represents the user middleware interface
 type User interface {
 	Create() (*model.User, error)

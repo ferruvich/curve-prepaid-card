@@ -11,7 +11,7 @@ const (
 	sessionTemplate = "host=%s user=%s dbname=%s sslmode=%s"
 )
 
-//go:generate mockgen -destination=database_mock.go -package=database github.com/ferruvich/curve-prepaid-card/internal/database DataBase
+//go:generate mockgen -destination=database_mock.go -source=database.go -package=database -self_package=. DataBase
 
 // DataBase represents the entry point for the DB
 type DataBase interface {
