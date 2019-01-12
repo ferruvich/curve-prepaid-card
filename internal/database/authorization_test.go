@@ -24,7 +24,7 @@ func TestAuthorizationRequest_Write(t *testing.T) {
 
 		mockDB.EXPECT().newPipelineStmt(
 			gomock.Any(), authReq.ID, authReq.Merchant, authReq.Card,
-			authReq.Amount, authReq.Reversed,
+			authReq.Approved, authReq.Amount, authReq.Reversed,
 		).Return(
 			&pipelineStmt{},
 		)
@@ -50,7 +50,7 @@ func TestAuthorizationRequest_Write(t *testing.T) {
 
 		mockDB.EXPECT().newPipelineStmt(
 			gomock.Any(), authReq.ID, authReq.Merchant, authReq.Card,
-			authReq.Amount, authReq.Reversed,
+			authReq.Approved, authReq.Amount, authReq.Reversed,
 		).Return(
 			&pipelineStmt{},
 		)

@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS authorizations(
     merchant UUID REFERENCES merchants(ID),
     card UUID REFERENCES cards(ID),
     amount DOUBLE PRECISION,
+    approved BOOLEAN,
     reversed DOUBLE PRECISION
 );
 

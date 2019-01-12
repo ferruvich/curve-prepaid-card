@@ -18,8 +18,9 @@ func TestNewAuthorizationRequest(t *testing.T) {
 	require.NotNil(t, authRequest)
 	require.Equal(t, authRequest.Merchant, merchantID)
 	require.Equal(t, authRequest.Card, cardID)
+	require.False(t, authRequest.Approved)
 	require.Equal(t, authRequest.Amount, amount)
-	require.Equal(t, authRequest.Reversed, 0.0)
+	require.Zero(t, authRequest.Reversed)
 }
 
 func TestAuthorizationRequest_Reverse(t *testing.T) {
@@ -49,4 +50,14 @@ func TestAuthorizationRequest_Reverse(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestAuthorizationRequest_Approve(t *testing.T) {
+	t.Run("should run", func(t *testing.T) {
+		authReq := &AuthorizationRequest{}
+
+		authReq.Approve()
+
+		require.True(t, authReq.Approved)
+	})
 }

@@ -25,14 +25,14 @@ func (a *AuthorizationRequestDataBase) Write(authReq *model.AuthorizationRequest
 
 	statements := []*pipelineStmt{
 		a.service.newPipelineStmt(
-			"INSERT INTO authorizations(ID,merchant,card,amount,reversed) VALUES ($1,$2,$3,$4,$5)",
-			authReq.ID, authReq.Merchant, authReq.Card, authReq.Amount, authReq.Reversed,
+			"INSERT INTO authorizations(ID,merchant,card,approved,amount,reversed) VALUES ($1,$2,$3,$4,$5,$6)",
+			authReq.ID, authReq.Merchant, authReq.Card, authReq.Approved, authReq.Amount, authReq.Reversed,
 		),
 	}
 
 	_, err := a.service.withTransaction(a.service.GetConnection(),
 		func(tx Transaction) (*sql.Rows, error) {
-			_, err := a.service.runPipeline(tx, statements[0])
+			_, err := a.service.runPipeline(tx, statements...)
 			return nil, err
 		})
 	if err != nil {

@@ -19,10 +19,29 @@ type AuthorizationRequestMiddleware struct {
 // Create creates and returns a new authorization request
 func (ar *AuthorizationRequestMiddleware) Create(merchantID string, cardID string, amount float64) (*model.AuthorizationRequest, error) {
 
+	// Amount blocked, creating authorization
 	authReq, err := model.NewAuthorizationRequest(
 		merchantID, cardID, amount,
 	)
 	if err != nil {
+		return nil, err
+	}
+
+	// Getting card to block amount
+	card, err := ar.middleware.DataBase().Card().Read(cardID)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = card.BlockAmount(amount); err != nil {
+		return nil, err
+	}
+
+	// Since blockAmount returns no error, we approve the auth request
+	authReq.Approve()
+
+	// Updating card and writing authorization
+	if err = ar.middleware.DataBase().Card().Update(card); err != nil {
 		return nil, err
 	}
 

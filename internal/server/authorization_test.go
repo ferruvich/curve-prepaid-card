@@ -12,9 +12,15 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/ferruvich/curve-prepaid-card/internal/database"
+	"github.com/ferruvich/curve-prepaid-card/internal/model"
 )
 
 func TestAuthorizationRequest_Create(t *testing.T) {
+
+	merchantID := "merchant_ID"
+	cardID := "card_ID"
+	amount := 10.0
+
 	t.Run("should run", func(t *testing.T) {
 		controller := gomock.NewController(t)
 		defer controller.Finish()
@@ -22,17 +28,21 @@ func TestAuthorizationRequest_Create(t *testing.T) {
 		mockAuthReq := database.NewMockAuthorizationRequest(controller)
 		mockAuthReq.EXPECT().Write(gomock.Any()).Return(nil)
 
+		mockCard := database.NewMockCard(controller)
+		mockCard.EXPECT().Read(cardID).Return(&model.Card{
+			ID: cardID, AccountBalance: amount, AvailableBalance: amount,
+		}, nil)
+		mockCard.EXPECT().Update(gomock.Any()).Return(nil)
+
 		mockDB := database.NewMockDataBase(controller)
 		mockDB.EXPECT().AuthorizationRequest().Return(mockAuthReq)
+		mockDB.EXPECT().Card().Return(mockCard).Times(2)
 
-		server := &Service{
-			db: mockDB,
-		}
+		server := &Service{db: mockDB}
 
 		authReq := &AuthorizationRequestBody{
-			MerchantID: "merchantID", CardID: "cardID", Amount: 10.0,
+			MerchantID: merchantID, CardID: cardID, Amount: amount,
 		}
-
 		authReqBytes, _ := json.Marshal(authReq)
 
 		router := server.Routers()
@@ -55,17 +65,21 @@ func TestAuthorizationRequest_Create(t *testing.T) {
 		mockAuthReq := database.NewMockAuthorizationRequest(controller)
 		mockAuthReq.EXPECT().Write(gomock.Any()).Return(errors.New("error"))
 
+		mockCard := database.NewMockCard(controller)
+		mockCard.EXPECT().Read(cardID).Return(&model.Card{
+			ID: cardID, AccountBalance: amount, AvailableBalance: amount,
+		}, nil)
+		mockCard.EXPECT().Update(gomock.Any()).Return(nil)
+
 		mockDB := database.NewMockDataBase(controller)
 		mockDB.EXPECT().AuthorizationRequest().Return(mockAuthReq)
+		mockDB.EXPECT().Card().Return(mockCard).Times(2)
 
-		server := &Service{
-			db: mockDB,
-		}
+		server := &Service{db: mockDB}
 
 		authReq := &AuthorizationRequestBody{
-			MerchantID: "merchantID", CardID: "cardID", Amount: 10.0,
+			MerchantID: merchantID, CardID: cardID, Amount: amount,
 		}
-
 		authReqBytes, _ := json.Marshal(authReq)
 
 		router := server.Routers()
