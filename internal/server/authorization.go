@@ -9,7 +9,7 @@ import (
 	"github.com/ferruvich/curve-prepaid-card/internal/middleware"
 )
 
-// AuthorizationRequest represents the Card handler
+// AuthorizationRequest represents the Authorization request handler
 type AuthorizationRequest interface {
 	Create() func(c *gin.Context)
 }
@@ -19,14 +19,19 @@ type AuthorizationRequestHandler struct {
 	server Server
 }
 
-// AuthorizationRequestBody embeds a topup request body
+// AuthorizationRequestBody embeds a authorization request body
 type AuthorizationRequestBody struct {
 	MerchantID string  `json:"merchant_id" binding:"required"`
 	CardID     string  `json:"card_id" binding:"required"`
 	Amount     float64 `json:"amount" binding:"required"`
 }
 
-// Create is the HTTP handler of the POST /card
+// CaptureAuthorizationRequestBody embeds the
+type CaptureAuthorizationRequestBody struct {
+	Amount float64 `json:"amount" binding:"required"`
+}
+
+// Create is the HTTP handler of the POST /authorization
 func (ar *AuthorizationRequestHandler) Create() func(c *gin.Context) {
 	return func(c *gin.Context) {
 
@@ -35,7 +40,7 @@ func (ar *AuthorizationRequestHandler) Create() func(c *gin.Context) {
 		if err != nil {
 			fmt.Printf("%+v", err)
 			c.JSON(http.StatusBadRequest, ErrorMessage{
-				Error: "bad request",
+				Error: fmt.Sprintf("%v", err),
 			})
 			return
 		}
@@ -46,7 +51,7 @@ func (ar *AuthorizationRequestHandler) Create() func(c *gin.Context) {
 		if err != nil {
 			fmt.Printf("%+v", err)
 			c.JSON(http.StatusInternalServerError, ErrorMessage{
-				Error: "create authorization request failed",
+				Error: fmt.Sprintf("%v", err),
 			})
 			return
 		}
