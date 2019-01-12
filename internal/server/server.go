@@ -1,6 +1,7 @@
 package server
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
 
 	"github.com/ferruvich/curve-prepaid-card/internal/configuration"
@@ -9,6 +10,7 @@ import (
 
 // Server is the main interface
 type Server interface {
+	Routers() *gin.Engine
 	DataBase() database.DataBase
 	NewAuthorizationRequestHandler() AuthorizationRequest
 	NewCardHandler() Card
@@ -35,6 +37,21 @@ func NewServer() (Server, error) {
 	}
 
 	return &Service{db}, nil
+}
+
+// Routers set ups and return a gin router
+func (s *Service) Routers() *gin.Engine {
+	router := gin.Default()
+
+	// Routes
+	router.POST("/user", s.NewUserHandler().Create())
+	router.POST("/user/:userID/card", s.NewCardHandler().Create())
+	router.GET("/user/:userID/card/:cardID", s.NewCardHandler().GetCard())
+	router.POST("/user/:userID/card/:cardID/deposit", s.NewCardHandler().Deposit())
+	router.POST("/merchant", s.NewMerchantHandler().Create())
+	router.POST("/authorization", s.NewAuthorizationRequestHandler().Create())
+
+	return router
 }
 
 // DataBase returns the db instance
