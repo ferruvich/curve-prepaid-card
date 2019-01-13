@@ -129,6 +129,18 @@ func (mr *MockDataBaseMockRecorder) Merchant() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Merchant", reflect.TypeOf((*MockDataBase)(nil).Merchant))
 }
 
+// Transaction mocks base method
+func (m *MockDataBase) Transaction() Transaction {
+	ret := m.ctrl.Call(m, "Transaction")
+	ret0, _ := ret[0].(Transaction)
+	return ret0
+}
+
+// Transaction indicates an expected call of Transaction
+func (mr *MockDataBaseMockRecorder) Transaction() *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Transaction", reflect.TypeOf((*MockDataBase)(nil).Transaction))
+}
+
 // User mocks base method
 func (m *MockDataBase) User() User {
 	ret := m.ctrl.Call(m, "User")

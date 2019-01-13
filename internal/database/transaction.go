@@ -24,7 +24,7 @@ func (t *TransactionDataBase) Write(tx *model.Transaction) error {
 
 	statements := []*pipelineStmt{
 		t.service.newPipelineStmt(
-			"INSERT INTO transactions(ID,sender,receiver,amount,date,type) VALUES ($1,$2,$2,$4,$5,$6)",
+			"INSERT INTO transactions(ID,sender,receiver,amount,date,type) VALUES ($1,$2,$3,$4,$5,$6)",
 			tx.ID, tx.Sender, tx.Receiver, tx.Amount, tx.Date, tx.Type,
 		),
 	}

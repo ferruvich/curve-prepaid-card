@@ -22,6 +22,7 @@ type DataBase interface {
 	AuthorizationRequest() AuthorizationRequest
 	Card() Card
 	Merchant() Merchant
+	Transaction() Transaction
 	User() User
 }
 
@@ -50,7 +51,7 @@ func (s *Service) GetConnection() *sql.DB {
 	return s.dbConnection
 }
 
-// AuthorizationRequest returns interface for user operations on DB
+// AuthorizationRequest returns interface for auth request operations on DB
 func (s *Service) AuthorizationRequest() AuthorizationRequest {
 	return &AuthorizationRequestDataBase{
 		service: s,
@@ -67,6 +68,13 @@ func (s *Service) Card() Card {
 // Merchant returns interface for merchant operations on DB
 func (s *Service) Merchant() Merchant {
 	return &MerchantDataBase{
+		service: s,
+	}
+}
+
+// Transaction returns interface for transaction operations on db
+func (s *Service) Transaction() Transaction {
+	return &TransactionDataBase{
 		service: s,
 	}
 }

@@ -52,6 +52,39 @@ func TestAuthorizationRequest_Reverse(t *testing.T) {
 	}
 }
 
+func TestAuthorizationRequest_Capture(t *testing.T) {
+	tests := map[string]struct {
+		card            *AuthorizationRequest
+		amountToCapture float64
+		expectingError  bool
+	}{
+		"should fail due to insufficient capturable amount": {
+			card: &AuthorizationRequest{
+				Amount: 10.0, Reversed: 3.0, Captured: 0.0,
+			},
+			amountToCapture: 10.0, expectingError: true,
+		},
+		"should increment successfully": {
+			card: &AuthorizationRequest{
+				Amount: 10.0, Reversed: 3.0, Captured: 0.0,
+			},
+			amountToCapture: 3.0, expectingError: false,
+		},
+	}
+
+	for name, test := range tests {
+		t.Run(name, func(t *testing.T) {
+			err := test.card.Capture(test.amountToCapture)
+
+			if test.expectingError {
+				require.Error(t, err)
+			} else {
+				require.NoError(t, err)
+			}
+		})
+	}
+}
+
 func TestAuthorizationRequest_Approve(t *testing.T) {
 	t.Run("should run", func(t *testing.T) {
 		authReq := &AuthorizationRequest{}

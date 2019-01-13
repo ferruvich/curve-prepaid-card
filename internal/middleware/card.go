@@ -18,7 +18,7 @@ type CardMiddleware struct {
 	middleware Middleware
 }
 
-// Create creates and returns new merchants, or an error if there is any
+// Create creates and returns new cards, or an error if there is any
 func (c *CardMiddleware) Create(ownerID string) (*model.Card, error) {
 
 	card, err := model.NewCard(ownerID)

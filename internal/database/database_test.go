@@ -27,6 +27,7 @@ func TestDataBase_Card(t *testing.T) {
 		require.Equal(t, service, card.(*CardDataBase).service)
 	})
 }
+
 func TestDataBase_Merchant(t *testing.T) {
 	t.Run("should run", func(t *testing.T) {
 		service := &Service{}
@@ -37,6 +38,18 @@ func TestDataBase_Merchant(t *testing.T) {
 		require.Equal(t, service, merchant.(*MerchantDataBase).service)
 	})
 }
+
+func TestDataBase_Transaction(t *testing.T) {
+	t.Run("should run", func(t *testing.T) {
+		service := &Service{}
+
+		tx := service.Transaction()
+
+		require.NotNil(t, tx)
+		require.Equal(t, service, tx.(*TransactionDataBase).service)
+	})
+}
+
 func TestDataBase_User(t *testing.T) {
 	t.Run("should run", func(t *testing.T) {
 		service := &Service{}

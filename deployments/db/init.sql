@@ -30,5 +30,6 @@ CREATE TABLE IF NOT EXISTS authorizations(
     card UUID REFERENCES cards(ID),
     amount DOUBLE PRECISION,
     approved BOOLEAN,
-    reversed DOUBLE PRECISION
+    reversed DOUBLE PRECISION,
+    captured DOUBLE PRECISION
 );

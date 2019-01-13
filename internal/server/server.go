@@ -15,6 +15,7 @@ type Server interface {
 	NewAuthorizationRequestHandler() AuthorizationRequest
 	NewCardHandler() Card
 	NewMerchantHandler() Merchant
+	NewTransactionHandler() Transaction
 	NewUserHandler() User
 }
 
@@ -50,6 +51,7 @@ func (s *Service) Routers() *gin.Engine {
 	router.POST("/user/:userID/card/:cardID/deposit", s.NewCardHandler().Deposit())
 	router.POST("/merchant", s.NewMerchantHandler().Create())
 	router.POST("/authorization", s.NewAuthorizationRequestHandler().Create())
+	router.POST("/authorization/:authID/capture", s.NewTransactionHandler().Create())
 
 	return router
 }
@@ -76,6 +78,13 @@ func (s *Service) NewCardHandler() Card {
 // NewMerchantHandler returns a new Merchant handler
 func (s *Service) NewMerchantHandler() Merchant {
 	return &MerchantHandler{
+		server: s,
+	}
+}
+
+// NewTransactionHandler returns a new Transaction handler
+func (s *Service) NewTransactionHandler() Transaction {
+	return &TransactionHandler{
 		server: s,
 	}
 }

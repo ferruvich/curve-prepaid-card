@@ -10,6 +10,7 @@ type Middleware interface {
 	AuthorizationRequest() AuthorizationRequest
 	Card() Card
 	Merchant() Merchant
+	Transaction() Transaction
 	User() User
 }
 
@@ -47,6 +48,13 @@ func (s *Service) Card() Card {
 // Merchant returns a new Merchant middleware
 func (s *Service) Merchant() Merchant {
 	return &MerchantMiddleware{
+		middleware: s,
+	}
+}
+
+// Transaction returns a new Transaction middleware
+func (s *Service) Transaction() Transaction {
+	return &TransactionMiddleware{
 		middleware: s,
 	}
 }

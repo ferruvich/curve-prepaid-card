@@ -33,6 +33,31 @@ func (m *MockAuthorizationRequest) EXPECT() *MockAuthorizationRequestMockRecorde
 	return m.recorder
 }
 
+// Read mocks base method
+func (m *MockAuthorizationRequest) Read(arg0 string) (*model.AuthorizationRequest, error) {
+	ret := m.ctrl.Call(m, "Read", arg0)
+	ret0, _ := ret[0].(*model.AuthorizationRequest)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Read indicates an expected call of Read
+func (mr *MockAuthorizationRequestMockRecorder) Read(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Read", reflect.TypeOf((*MockAuthorizationRequest)(nil).Read), arg0)
+}
+
+// Update mocks base method
+func (m *MockAuthorizationRequest) Update(arg0 *model.AuthorizationRequest) error {
+	ret := m.ctrl.Call(m, "Update", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update
+func (mr *MockAuthorizationRequestMockRecorder) Update(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockAuthorizationRequest)(nil).Update), arg0)
+}
+
 // Write mocks base method
 func (m *MockAuthorizationRequest) Write(arg0 *model.AuthorizationRequest) error {
 	ret := m.ctrl.Call(m, "Write", arg0)

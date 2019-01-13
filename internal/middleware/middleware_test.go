@@ -68,6 +68,17 @@ func TestMiddleware_Merchant(t *testing.T) {
 	})
 }
 
+func TestMiddleware_Transaction(t *testing.T) {
+	t.Run("should run", func(t *testing.T) {
+		middleware := &Service{}
+
+		tx := middleware.Transaction()
+
+		require.NotNil(t, tx)
+		require.Equal(t, middleware, tx.(*TransactionMiddleware).middleware)
+	})
+}
+
 func TestMiddleware_User(t *testing.T) {
 	t.Run("should run", func(t *testing.T) {
 		middleware := &Service{}

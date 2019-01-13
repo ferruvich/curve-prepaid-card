@@ -58,7 +58,7 @@ func (c *CardDataBase) Read(cardID string) (*model.Card, error) {
 		func(tx DBTransaction) (*sql.Rows, error) {
 			res, err := c.service.runPipeline(tx, statements...)
 			if !res.Next() {
-				return nil, errors.Errorf("user not found")
+				return nil, errors.Errorf("card not found")
 			}
 			if err = res.Scan(&updatedCard.ID, &updatedCard.Owner,
 				&updatedCard.AccountBalance, &blockedAmount); err != nil {
