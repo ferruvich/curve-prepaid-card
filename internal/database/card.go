@@ -17,7 +17,7 @@ type Card interface {
 	Read(string) (*model.Card, error)
 }
 
-// CardDataBase handler card operations in DB
+// CardDataBase handles card operations in DB
 type CardDataBase struct {
 	service DataBase
 }
@@ -33,7 +33,7 @@ func (c *CardDataBase) Write(card *model.Card) error {
 	}
 
 	_, err := c.service.withTransaction(c.service.GetConnection(),
-		func(tx Transaction) (*sql.Rows, error) {
+		func(tx DBTransaction) (*sql.Rows, error) {
 			_, err := c.service.runPipeline(tx, statements...)
 			return nil, err
 		})
@@ -55,7 +55,7 @@ func (c *CardDataBase) Read(cardID string) (*model.Card, error) {
 	}
 
 	_, err := c.service.withTransaction(c.service.GetConnection(),
-		func(tx Transaction) (*sql.Rows, error) {
+		func(tx DBTransaction) (*sql.Rows, error) {
 			res, err := c.service.runPipeline(tx, statements...)
 			if !res.Next() {
 				return nil, errors.Errorf("user not found")
@@ -85,7 +85,7 @@ func (c *CardDataBase) Update(card *model.Card) error {
 	}
 
 	_, err := c.service.withTransaction(c.service.GetConnection(),
-		func(tx Transaction) (*sql.Rows, error) {
+		func(tx DBTransaction) (*sql.Rows, error) {
 			res, err := c.service.runPipeline(tx, statements...)
 			return res, err
 		})

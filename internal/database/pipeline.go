@@ -10,7 +10,7 @@ import (
 
 // Pipeline is a simple wrapper for creating a statement
 type Pipeline interface {
-	makeQuery(Transaction) (*sql.Rows, error)
+	makeQuery(DBTransaction) (*sql.Rows, error)
 }
 
 // pipelineStmt is the pipeline struct
@@ -22,7 +22,7 @@ type pipelineStmt struct {
 
 // runPipeline runs the supplied statements within the Transaction. If any statement fails, the Transaction
 // is rolled back, and the original error is returned.
-func (s *Service) runPipeline(tx Transaction, stmts ...*pipelineStmt) (*sql.Rows, error) {
+func (s *Service) runPipeline(tx DBTransaction, stmts ...*pipelineStmt) (*sql.Rows, error) {
 	var res *sql.Rows
 	var err error
 
@@ -42,6 +42,6 @@ func (s *Service) newPipelineStmt(query string, args ...interface{}) *pipelineSt
 }
 
 // makeQuery Executes the statement within supplied Transaction, returning rows
-func (ps *pipelineStmt) makeQuery(tx Transaction) (*sql.Rows, error) {
+func (ps *pipelineStmt) makeQuery(tx DBTransaction) (*sql.Rows, error) {
 	return tx.Query(ps.query, ps.args...)
 }

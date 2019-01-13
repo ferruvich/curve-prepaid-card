@@ -15,8 +15,8 @@ const (
 
 // DataBase represents the entry point for the DB
 type DataBase interface {
-	withTransaction(*sql.DB, func(Transaction) (*sql.Rows, error)) (*sql.Rows, error)
-	runPipeline(Transaction, ...*pipelineStmt) (*sql.Rows, error)
+	withTransaction(*sql.DB, func(DBTransaction) (*sql.Rows, error)) (*sql.Rows, error)
+	runPipeline(DBTransaction, ...*pipelineStmt) (*sql.Rows, error)
 	newPipelineStmt(string, ...interface{}) *pipelineStmt
 	GetConnection() *sql.DB
 	AuthorizationRequest() AuthorizationRequest

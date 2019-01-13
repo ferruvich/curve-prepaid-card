@@ -34,7 +34,7 @@ func (m *MockDataBase) EXPECT() *MockDataBaseMockRecorder {
 }
 
 // withTransaction mocks base method
-func (m *MockDataBase) withTransaction(arg0 *sql.DB, arg1 func(Transaction) (*sql.Rows, error)) (*sql.Rows, error) {
+func (m *MockDataBase) withTransaction(arg0 *sql.DB, arg1 func(DBTransaction) (*sql.Rows, error)) (*sql.Rows, error) {
 	ret := m.ctrl.Call(m, "withTransaction", arg0, arg1)
 	ret0, _ := ret[0].(*sql.Rows)
 	ret1, _ := ret[1].(error)
@@ -47,7 +47,7 @@ func (mr *MockDataBaseMockRecorder) withTransaction(arg0, arg1 interface{}) *gom
 }
 
 // runPipeline mocks base method
-func (m *MockDataBase) runPipeline(arg0 Transaction, arg1 ...*pipelineStmt) (*sql.Rows, error) {
+func (m *MockDataBase) runPipeline(arg0 DBTransaction, arg1 ...*pipelineStmt) (*sql.Rows, error) {
 	varargs := []interface{}{arg0}
 	for _, a := range arg1 {
 		varargs = append(varargs, a)

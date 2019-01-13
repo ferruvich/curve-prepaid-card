@@ -18,7 +18,7 @@ func TestDataBase_RunPipeline(t *testing.T) {
 		controller := gomock.NewController(t)
 		defer controller.Finish()
 
-		mockTransaction := NewMockTransaction(controller)
+		mockTransaction := NewMockDBTransaction(controller)
 		mockTransaction.EXPECT().Query(gomock.Any()).Return(
 			nil, fakeError,
 		)
@@ -38,7 +38,7 @@ func TestDataBase_RunPipeline(t *testing.T) {
 		controller := gomock.NewController(t)
 		defer controller.Finish()
 
-		mockTransaction := NewMockTransaction(controller)
+		mockTransaction := NewMockDBTransaction(controller)
 		mockTransaction.EXPECT().Query(gomock.Any()).Return(
 			&sql.Rows{}, nil,
 		)
@@ -73,7 +73,7 @@ func TestPipeline_MakeQuery(t *testing.T) {
 		controller := gomock.NewController(t)
 		defer controller.Finish()
 
-		mockTransaction := NewMockTransaction(controller)
+		mockTransaction := NewMockDBTransaction(controller)
 		mockTransaction.EXPECT().Query(gomock.Any()).Return(
 			nil, fakeError,
 		)
@@ -92,7 +92,7 @@ func TestPipeline_MakeQuery(t *testing.T) {
 		controller := gomock.NewController(t)
 		defer controller.Finish()
 
-		mockTransaction := NewMockTransaction(controller)
+		mockTransaction := NewMockDBTransaction(controller)
 		mockTransaction.EXPECT().Query(gomock.Any()).Return(
 			&sql.Rows{}, nil,
 		)

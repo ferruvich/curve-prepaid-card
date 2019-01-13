@@ -34,7 +34,7 @@ func (m *MockPipeline) EXPECT() *MockPipelineMockRecorder {
 }
 
 // makeQuery mocks base method
-func (m *MockPipeline) makeQuery(arg0 Transaction) (*sql.Rows, error) {
+func (m *MockPipeline) makeQuery(arg0 DBTransaction) (*sql.Rows, error) {
 	ret := m.ctrl.Call(m, "makeQuery", arg0)
 	ret0, _ := ret[0].(*sql.Rows)
 	ret1, _ := ret[1].(error)

@@ -29,7 +29,7 @@ func (m *MerchantDataBase) Write(merchant *model.Merchant) error {
 		m.service.newPipelineStmt("INSERT INTO merchants VALUES ($1)", merchant.ID),
 	}
 
-	_, err := m.service.withTransaction(m.service.GetConnection(), func(tx Transaction) (*sql.Rows, error) {
+	_, err := m.service.withTransaction(m.service.GetConnection(), func(tx DBTransaction) (*sql.Rows, error) {
 		_, err := m.service.runPipeline(tx, statements...)
 		return nil, err
 	})

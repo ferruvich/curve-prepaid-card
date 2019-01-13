@@ -31,7 +31,7 @@ func (a *AuthorizationRequestDataBase) Write(authReq *model.AuthorizationRequest
 	}
 
 	_, err := a.service.withTransaction(a.service.GetConnection(),
-		func(tx Transaction) (*sql.Rows, error) {
+		func(tx DBTransaction) (*sql.Rows, error) {
 			_, err := a.service.runPipeline(tx, statements...)
 			return nil, err
 		})
