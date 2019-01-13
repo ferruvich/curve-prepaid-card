@@ -51,7 +51,8 @@ func (s *Service) Routers() *gin.Engine {
 	router.POST("/user/:userID/card/:cardID/deposit", s.NewCardHandler().Deposit())
 	router.POST("/merchant", s.NewMerchantHandler().Create())
 	router.POST("/authorization", s.NewAuthorizationRequestHandler().Create())
-	router.POST("/authorization/:authID/capture", s.NewTransactionHandler().Create())
+	router.POST("/authorization/:authID/capture", s.NewAuthorizationRequestHandler().Capture())
+	router.POST("/authorization/:authID/revert", s.NewAuthorizationRequestHandler().Revert())
 
 	return router
 }

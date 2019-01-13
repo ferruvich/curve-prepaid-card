@@ -45,3 +45,15 @@ func (m *MockAuthorizationRequest) Create(arg0, arg1 string, arg2 float64) (*mod
 func (mr *MockAuthorizationRequestMockRecorder) Create(arg0, arg1, arg2 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockAuthorizationRequest)(nil).Create), arg0, arg1, arg2)
 }
+
+// Revert mocks base method
+func (m *MockAuthorizationRequest) Revert(arg0 string, arg1 float64) error {
+	ret := m.ctrl.Call(m, "Revert", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Revert indicates an expected call of Revert
+func (mr *MockAuthorizationRequestMockRecorder) Revert(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Revert", reflect.TypeOf((*MockAuthorizationRequest)(nil).Revert), arg0, arg1)
+}

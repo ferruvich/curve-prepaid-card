@@ -12,6 +12,8 @@ import (
 // AuthorizationRequest represents the Authorization request handler
 type AuthorizationRequest interface {
 	Create() func(c *gin.Context)
+	Capture() func(c *gin.Context)
+	Revert() func(c *gin.Context)
 }
 
 // AuthorizationRequestHandler is the AuthorizationRequest struct
@@ -26,8 +28,8 @@ type AuthorizationRequestBody struct {
 	Amount     float64 `json:"amount" binding:"required"`
 }
 
-// CaptureAuthorizationRequestBody embeds the
-type CaptureAuthorizationRequestBody struct {
+// AmountBody embeds a revert request, or a capture one
+type AmountBody struct {
 	Amount float64 `json:"amount" binding:"required"`
 }
 
@@ -45,7 +47,7 @@ func (ar *AuthorizationRequestHandler) Create() func(c *gin.Context) {
 			return
 		}
 
-		card, err := middleware.NewMiddleware(ar.server.DataBase()).AuthorizationRequest().Create(
+		authRequest, err := middleware.NewMiddleware(ar.server.DataBase()).AuthorizationRequest().Create(
 			request.MerchantID, request.CardID, request.Amount,
 		)
 		if err != nil {
@@ -56,6 +58,66 @@ func (ar *AuthorizationRequestHandler) Create() func(c *gin.Context) {
 			return
 		}
 
-		c.JSON(http.StatusCreated, card)
+		c.JSON(http.StatusCreated, authRequest)
+	}
+}
+
+// Capture captures an auth request, is used in POST /authorization/:id/capture
+func (ar *AuthorizationRequestHandler) Capture() func(*gin.Context) {
+	return func(c *gin.Context) {
+
+		authReqID := c.Param("authID")
+
+		request := &AmountBody{}
+		err := c.BindJSON(request)
+		if err != nil {
+			fmt.Printf("%+v", err)
+			c.JSON(http.StatusBadRequest, ErrorMessage{
+				Error: "bad request",
+			})
+			return
+		}
+
+		tx, err := middleware.NewMiddleware(ar.server.DataBase()).Transaction().CreatePayment(authReqID, request.Amount)
+		if err != nil {
+			fmt.Printf("%+v", err)
+			c.JSON(http.StatusInternalServerError, ErrorMessage{
+				Error: fmt.Sprintf("%v", err),
+			})
+			return
+		}
+
+		c.JSON(http.StatusCreated, tx)
+
+	}
+}
+
+// Revert reverts some amount of an auth request, is used in POST /authorization/:id/revert
+func (ar *AuthorizationRequestHandler) Revert() func(c *gin.Context) {
+	return func(c *gin.Context) {
+
+		authID := c.Param("authID")
+
+		request := &AmountBody{}
+		err := c.BindJSON(request)
+		if err != nil {
+			fmt.Printf("%+v", err)
+			c.JSON(http.StatusBadRequest, ErrorMessage{
+				Error: fmt.Sprintf("%v", err),
+			})
+			return
+		}
+
+		if err = middleware.NewMiddleware(ar.server.DataBase()).AuthorizationRequest().Revert(
+			authID, request.Amount,
+		); err != nil {
+			fmt.Printf("%+v", err)
+			c.JSON(http.StatusInternalServerError, ErrorMessage{
+				Error: fmt.Sprintf("%v", err),
+			})
+			return
+		}
+
+		c.Writer.WriteHeader(http.StatusAccepted)
 	}
 }
