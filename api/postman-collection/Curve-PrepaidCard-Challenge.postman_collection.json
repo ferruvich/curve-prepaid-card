@@ -1,0 +1,294 @@
+{
+	"info": {
+		"_postman_id": "0ac74625-5620-4e93-b097-6e70eb7a2976",
+		"name": "Curve-PrepaidCard-Challenge",
+		"description": "Curve Prepaid Card Challenge API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/user",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user"
+					]
+				},
+				"description": "user creation, it returns the user created"
+			},
+			"response": []
+		},
+		{
+			"name": "Create merchant",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/merchant",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"merchant"
+					]
+				},
+				"description": "It creates a merchant and returns it"
+			},
+			"response": []
+		},
+		{
+			"name": "Create card",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/user/a1635320-174e-11e9-bf36-0242ac160003/card",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"a1635320-174e-11e9-bf36-0242ac160003",
+						"card"
+					]
+				},
+				"description": "it takes a used id and creates a card for him, returning it"
+			},
+			"response": []
+		},
+		{
+			"name": "Deposit to card",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"amount\": 10\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/user/a1635320-174e-11e9-bf36-0242ac160003/card/8d8c5925-1750-11e9-ac5d-0242ac160003/deposit",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"a1635320-174e-11e9-bf36-0242ac160003",
+						"card",
+						"8d8c5925-1750-11e9-ac5d-0242ac160003",
+						"deposit"
+					]
+				},
+				"description": "it deposit given amount to card, returning 204 if done"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Card",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/user/a1635320-174e-11e9-bf36-0242ac160003/card/8d8c5925-1750-11e9-ac5d-0242ac160003",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"a1635320-174e-11e9-bf36-0242ac160003",
+						"card",
+						"8d8c5925-1750-11e9-ac5d-0242ac160003"
+					]
+				},
+				"description": "It gets a card"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Card Transactions",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/user/a1635320-174e-11e9-bf36-0242ac160003/card/8d8c5925-1750-11e9-ac5d-0242ac160003/transaction",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"a1635320-174e-11e9-bf36-0242ac160003",
+						"card",
+						"8d8c5925-1750-11e9-ac5d-0242ac160003",
+						"transaction"
+					]
+				},
+				"description": "Returns all transactions of a given card"
+			},
+			"response": []
+		},
+		{
+			"name": "Authorization Request",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"merchant_id\": \"a7b492f9-174e-11e9-bf36-0242ac160003\",\n\t\"card_id\": \"8d8c5925-1750-11e9-ac5d-0242ac160003\",\n\t\"amount\": 5\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/authorization",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"authorization"
+					]
+				},
+				"description": "it creates an authorization request form a merchant to a card"
+			},
+			"response": []
+		},
+		{
+			"name": "Capture Authorization",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"amount\": 1.0\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/authorization/5dfaa408-1769-11e9-bbbc-0242ac160003/capture",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"authorization",
+						"5dfaa408-1769-11e9-bbbc-0242ac160003",
+						"capture"
+					]
+				},
+				"description": "Capture authorization"
+			},
+			"response": []
+		},
+		{
+			"name": "Revert Authorization",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"amount\": 2\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/authorization/5182e29c-1767-11e9-bb54-0242ac160003/revert",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"authorization",
+						"5182e29c-1767-11e9-bb54-0242ac160003",
+						"revert"
+					]
+				},
+				"description": "Reverts some amount of an authorization request"
+			},
+			"response": []
+		},
+		{
+			"name": "Refund Captured",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"amount\": 1.0\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/authorization/5dfaa408-1769-11e9-bbbc-0242ac160003/refund",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"authorization",
+						"5dfaa408-1769-11e9-bbbc-0242ac160003",
+						"refund"
+					]
+				},
+				"description": "Refund captured amount"
+			},
+			"response": []
+		}
+	]
+}

@@ -1,0 +1,120 @@
+# Curve Prepaid Card API
+
+
+# Group User
+## Create [POST /user]
++ Response 201 (application/json)
+    + Attributes (UserCreationResponse)
+
+
+# Group Merchant
+## Create [POST /merchant]
++ Response 201 (application/json)
+    + Attributes (MerchantCreationResponse)
+
+
+# Group Card
+## Create [POST /user/{userID}/card]
++ Parameters
+    + userID: `86c8b46c-1750-11e9-ac5d-0242ac160003` - User's id
++ Response 201 (application/json)
+    + Attributes (CardCreationResponse)
+
+## Get Card [GET /user/{userID}/card/{cardID}]
++ Parameters
+    + userID: `86c8b46c-1750-11e9-ac5d-0242ac160003` - User's id
+    + cardID: `8d8c5925-1750-11e9-ac5d-0242ac160003` - Card id
++ Response 200 (application/json)
+    + Attributes (CardCreationResponse)
+
+## Deposit Amount to Card [POST /user/{userID}/card/{cardID}/deposit]
++ Parameters
+    + userID: `86c8b46c-1750-11e9-ac5d-0242ac160003` - User's id
+    + cardID: `8d8c5925-1750-11e9-ac5d-0242ac160003` - Card id
++ Request (AmountBody)
++ Response 204
+
+## Get Card Transactions [POST /user/{userID}/card/{cardID}/transaction]
++ Parameters
+    + userID: `86c8b46c-1750-11e9-ac5d-0242ac160003` - User's id
+    + cardID: `8d8c5925-1750-11e9-ac5d-0242ac160003` - Card id
++ Response 200 (application/json)
+    + Attributes (array)
+        + (PaymentTransaction)
+        + (RefundTransaction)
+
+
+# Group Authorization Request
+# Create [POST /authorization]
++ Request (AuthorizationRequestBody)
++ Response 201 (application/json)
+    + Attributes (AuthorizationRequestResponse)
+
+# Capture Amount [POST /authorization/{authID}/capture]
++ Parameters
+    + authID: `5dfaa408-1769-11e9-bbbc-0242ac160003` - Authorization request id
++ Request (AmountBody)
++ Response 201 (application/json)
+    + Attributes (PaymentTransaction)
+
+# Revert Amount [POST /authorization/{authID}/revert]
++ Parameters
+    + authID: `5dfaa408-1769-11e9-bbbc-0242ac160003` - Authorization request id
++ Request (AmountBody)
++ Response 204
+
+# Refund Captured Amount [POST /authorization/{authID}/refund]
++ Parameters
+    + authID: `5dfaa408-1769-11e9-bbbc-0242ac160003` - Authorization request id
++ Request (AmountBody)
++ Response 201 (application/json)
+    + Attributes (RefundTransaction)
+
+
+# Data Structures
+
+## UserCreationResponse (object)
+- `ID`: `86c8b46c-1750-11e9-ac5d-0242ac160003` (string) - The User ID
+
+## MerchantCreationResponse (object)
+- `ID`: `a7b492f9-174e-11e9-bf36-0242ac160003` (string) - The Merchant ID
+
+## CardCreationResponse (object)
+- `ID`: `8d8c5925-1750-11e9-ac5d-0242ac160003` (string) - The card ID
+- `owner`: `86c8b46c-1750-11e9-ac5d-0242ac160003` (string) - The user ID
+- `account_balance`: 0.0 (number)
+- `available_balance`: 0.0 (number)
+
+## AmountBody (object)
+- `amount`: 10.0 (number, required) - The amount 
+
+## GeneralTransaction (object)
+- `amount`: 10.0
+- `date`: `2019-01-13`
+
+## PaymentTransaction (GeneralTransaction)
+- `ID`: `86c8b46c-1750-45b6-af54-0242ac160003`
+- `sender`: `86c8b46c-1750-11e9-ac5d-0242ac160003`
+- `receiver`: `a7b492f9-174e-11e9-bf36-0242ac160003`
+- `type`: `payment` (string)
+
+## RefundTransaction (GeneralTransaction)
+- `ID`: `86c8b46c-1751-45b6-af54-0242ac162303`
+- `receiver`: `86c8b46c-1750-11e9-ac5d-0242ac160003`
+- `sender`: `a7b492f9-174e-11e9-bf36-0242ac160003`
+- `type`: `refund` (string)
+
+## AuthorizationRequestBody (object)
+- `merchant_id`: `a7b492f9-174e-11e9-bf36-0242ac160003` (string)
+- `card_id`: `8d8c5925-1750-11e9-ac5d-0242ac160003` (string)
+- `amount`: 5.0 (number)
+
+## AuthorizationRequestResponse (object)
+- `ID`: `5dfaa408-1769-11e9-bbbc-0242ac160003` (string)
+- `merchant`: `a7b492f9-174e-11e9-bf36-0242ac160003` (string)
+- `card`: `8d8c5925-1750-11e9-ac5d-0242ac160003` (string)
+- `approved`: true (boolean)
+- `amount`: 5.0 (number)
+- `reversed`: 0.0 (number)
+- `captured`: 0.0 (number)
+- `refunded`: 0.0 (number)
