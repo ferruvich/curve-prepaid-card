@@ -12,9 +12,8 @@ type Configuration struct {
 
 // Server embeds server configuration
 type Server struct {
-	Host    string
-	Port    string
-	GinMode string
+	Host string
+	Port string
 }
 
 // Psql embeds Postgresql configuration
@@ -32,9 +31,8 @@ func GetConfiguration() *Configuration {
 
 	return &Configuration{
 		Server: &Server{
-			GinMode: os.Getenv("SERVER_GIN_MODE"),
-			Host:    os.Getenv("SERVER_HOST"),
-			Port:    os.Getenv("SERVER_PORT"),
+			Host: os.Getenv("SERVER_HOST"),
+			Port: os.Getenv("SERVER_PORT"),
 		},
 		Psql: &Psql{
 			DriverName: os.Getenv("PSQL_DRIVER_NAME"),

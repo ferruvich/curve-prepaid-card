@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/ferruvich/curve-prepaid-card/internal/model"
 
@@ -57,6 +58,7 @@ func (c *CardDataBase) Read(cardID string) (*model.Card, error) {
 	_, err := c.service.withTransaction(c.service.GetConnection(),
 		func(tx DBTransaction) (*sql.Rows, error) {
 			res, err := c.service.runPipeline(tx, statements...)
+			fmt.Println(res)
 			if !res.Next() {
 				return nil, errors.Errorf("card not found")
 			}

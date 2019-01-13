@@ -25,7 +25,7 @@ func TestAuthorizationRequest_Write(t *testing.T) {
 
 		mockDB.EXPECT().newPipelineStmt(
 			gomock.Any(), authReq.ID, authReq.Merchant, authReq.Card,
-			authReq.Approved, authReq.Amount, authReq.Reversed, authReq.Captured,
+			authReq.Approved, authReq.Amount, authReq.Reversed, authReq.Captured, authReq.Refunded,
 		).Return(
 			&pipelineStmt{},
 		)
@@ -51,7 +51,7 @@ func TestAuthorizationRequest_Write(t *testing.T) {
 
 		mockDB.EXPECT().newPipelineStmt(
 			gomock.Any(), authReq.ID, authReq.Merchant, authReq.Card,
-			authReq.Approved, authReq.Amount, authReq.Reversed, authReq.Captured,
+			authReq.Approved, authReq.Amount, authReq.Reversed, authReq.Captured, authReq.Refunded,
 		).Return(
 			&pipelineStmt{},
 		)
@@ -130,7 +130,7 @@ func TestAuthorizationRequest_Update(t *testing.T) {
 		mockDB := NewMockDataBase(controller)
 		mockDB.EXPECT().newPipelineStmt(
 			gomock.Any(), authReq.ID, authReq.Merchant, authReq.Card,
-			authReq.Approved, authReq.Amount, authReq.Reversed, authReq.Captured,
+			authReq.Approved, authReq.Amount, authReq.Reversed, authReq.Captured, authReq.Refunded,
 		).Return(&pipelineStmt{})
 		mockDB.EXPECT().withTransaction(db, gomock.Any()).Return(nil, errors.New("error writing card"))
 		mockDB.EXPECT().GetConnection().Return(db)
@@ -151,7 +151,7 @@ func TestAuthorizationRequest_Update(t *testing.T) {
 		mockDB := NewMockDataBase(controller)
 		mockDB.EXPECT().newPipelineStmt(
 			gomock.Any(), authReq.ID, authReq.Merchant, authReq.Card,
-			authReq.Approved, authReq.Amount, authReq.Reversed, authReq.Captured,
+			authReq.Approved, authReq.Amount, authReq.Reversed, authReq.Captured, authReq.Refunded,
 		).Return(&pipelineStmt{})
 		mockDB.EXPECT().withTransaction(db, gomock.Any()).Return(nil, nil)
 		mockDB.EXPECT().GetConnection().Return(db)

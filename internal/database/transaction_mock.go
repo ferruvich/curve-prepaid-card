@@ -44,3 +44,16 @@ func (m *MockTransaction) Write(arg0 *model.Transaction) error {
 func (mr *MockTransactionMockRecorder) Write(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Write", reflect.TypeOf((*MockTransaction)(nil).Write), arg0)
 }
+
+// GetListByCard mocks base method
+func (m *MockTransaction) GetListByCard(arg0 string) ([]*model.Transaction, error) {
+	ret := m.ctrl.Call(m, "GetListByCard", arg0)
+	ret0, _ := ret[0].([]*model.Transaction)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetListByCard indicates an expected call of GetListByCard
+func (mr *MockTransactionMockRecorder) GetListByCard(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetListByCard", reflect.TypeOf((*MockTransaction)(nil).GetListByCard), arg0)
+}

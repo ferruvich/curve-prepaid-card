@@ -10,6 +10,7 @@ import (
 type Transaction interface {
 	CreatePayment(string, float64) (*model.Transaction, error)
 	CreateRefund(string, float64) (*model.Transaction, error)
+	GetListByCard(string) ([]*model.Transaction, error)
 }
 
 // TransactionMiddleware is the Transaction implementation
@@ -95,4 +96,20 @@ func (t *TransactionMiddleware) CreateRefund(authReqID string, amount float64) (
 	}
 
 	return tx, nil
+}
+
+// GetListByCard returns a transaction list, given a card
+func (t *TransactionMiddleware) GetListByCard(cardID string) ([]*model.Transaction, error) {
+	// Get card, to get owner
+	card, err := t.middleware.DataBase().Card().Read(cardID)
+	if err != nil {
+		return nil, err
+	}
+
+	txList, err := t.middleware.DataBase().Transaction().GetListByCard(card.Owner)
+	if err != nil {
+		return nil, err
+	}
+
+	return txList, nil
 }

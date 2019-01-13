@@ -168,3 +168,63 @@ func TestTransaction_CreateRefund(t *testing.T) {
 		require.Equal(t, res.Sender, authReq.Merchant)
 	})
 }
+
+func TestTransaction_GetListByCard(t *testing.T) {
+	t.Run("should fail due to db error", func(t *testing.T) {
+		controller := gomock.NewController(t)
+		defer controller.Finish()
+
+		mockTransactionDB := database.NewMockTransaction(controller)
+		mockTransactionDB.EXPECT().GetListByCard("userID").Return(
+			nil, errors.New("error"),
+		)
+
+		mockCardDB := database.NewMockCard(controller)
+		mockCardDB.EXPECT().Read("cardID").Return(
+			&model.Card{ID: "cardID", Owner: "userID"}, nil,
+		)
+
+		mockDB := database.NewMockDataBase(controller)
+		mockDB.EXPECT().Transaction().Return(mockTransactionDB)
+		mockDB.EXPECT().Card().Return(mockCardDB)
+
+		mockMiddleware := NewMockMiddleware(controller)
+		mockMiddleware.EXPECT().DataBase().Return(mockDB).Times(2)
+
+		txMiddleware := &TransactionMiddleware{middleware: mockMiddleware}
+
+		txs, err := txMiddleware.GetListByCard("cardID")
+
+		require.Error(t, err)
+		require.Nil(t, txs)
+	})
+
+	t.Run("should run", func(t *testing.T) {
+		controller := gomock.NewController(t)
+		defer controller.Finish()
+
+		mockTransactionDB := database.NewMockTransaction(controller)
+		mockTransactionDB.EXPECT().GetListByCard("userID").Return(
+			[]*model.Transaction{}, nil,
+		)
+
+		mockCardDB := database.NewMockCard(controller)
+		mockCardDB.EXPECT().Read("cardID").Return(
+			&model.Card{ID: "cardID", Owner: "userID"}, nil,
+		)
+
+		mockDB := database.NewMockDataBase(controller)
+		mockDB.EXPECT().Transaction().Return(mockTransactionDB)
+		mockDB.EXPECT().Card().Return(mockCardDB)
+
+		mockMiddleware := NewMockMiddleware(controller)
+		mockMiddleware.EXPECT().DataBase().Return(mockDB).Times(2)
+
+		txMiddleware := &TransactionMiddleware{middleware: mockMiddleware}
+
+		txs, err := txMiddleware.GetListByCard("cardID")
+
+		require.NoError(t, err)
+		require.NotNil(t, txs)
+	})
+}

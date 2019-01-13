@@ -48,6 +48,7 @@ func (s *Service) Routers() *gin.Engine {
 	router.POST("/user", s.NewUserHandler().Create())
 	router.POST("/user/:userID/card", s.NewCardHandler().Create())
 	router.GET("/user/:userID/card/:cardID", s.NewCardHandler().GetCard())
+	router.GET("/user/:userID/card/:cardID/transaction", s.NewTransactionHandler().GetTransactionList())
 	router.POST("/user/:userID/card/:cardID/deposit", s.NewCardHandler().Deposit())
 	router.POST("/merchant", s.NewMerchantHandler().Create())
 	router.POST("/authorization", s.NewAuthorizationRequestHandler().Create())

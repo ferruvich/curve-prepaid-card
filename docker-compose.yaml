@@ -18,7 +18,6 @@ services:
     ports:
       - '8080:8080'
     environment:
-      SERVER_GIN_MODE: debug
       SERVER_HOST: "0.0.0.0"
       SERVER_PORT: "8080"
       PSQL_DRIVER_NAME: postgres
