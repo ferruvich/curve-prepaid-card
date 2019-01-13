@@ -3,11 +3,17 @@ Curve Ldt. Development Challenge: a small project for payments via prepaid card.
 
 ## Project Description
 This project simulates a payment via prepaid cards.
+
 The **user**, after being created, can create a **card** and **deposit** some money on it.
+
 When the user decides to pay something with his card, a **merchant** (that has already been created) can make an **authorization request** to block some amount of money. 
+
 If the card contains enough money, the request is accepted and the amount is blocked.
+
 After that, the merchant can **capture** some or all of the amount requested before, creating a **transaction** and receiving the money.
+
 The merchant can **revert** some of the authorization request amount, making him unable to capture this later.
+
 After capturing it, the merchant can **refund** the user, creating a transaction sending the money back to him.
 
 ## What is missing
