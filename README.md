@@ -31,7 +31,7 @@ After capturing it, the merchant can **refund** the user, creating a transaction
 
 ## How to run the project
 
-### What do you need 
+### What do you need
 - Go 1.11, since this project uses `go mod`;
 - Docker and docker-compose;
 
@@ -54,4 +54,5 @@ you can find the documentation served on port 3000.
 If you do not want to use `aglio`, you can find this api [here](https://curveprepaidcard.docs.apiary.io/#)
 
 ### How to perform API Calls 
-A Postman documentation has been created in order to perform example calls. It is available [here](https://github.com/ferruvich/curve-prepaid-card/tree/master/api/postman-collection)
+A Postman documentation has been created in order to perform example calls. It is available [here](https://github.com/ferruvich/curve-prepaid-card/tree/master/api/postman-collection). 
+To use it, download it, open Postman, click on **import** and follow the instructions.
