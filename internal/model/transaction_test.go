@@ -8,7 +8,7 @@ import (
 
 func TestNewTransaction(t *testing.T) {
 	t.Run("should run", func(t *testing.T) {
-		tx, err := NewTransaction(
+		tx, err := newTransaction(
 			"sender", "receiver", 10.0,
 		)
 

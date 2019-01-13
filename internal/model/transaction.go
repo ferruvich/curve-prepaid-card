@@ -24,8 +24,8 @@ type Transaction struct {
 	Type     string  `json:"type"`
 }
 
-// NewTransaction returns a new transaction with id
-func NewTransaction(sender, receiver string, amount float64) (*Transaction, error) {
+// newTransaction returns a new transaction with id
+func newTransaction(sender, receiver string, amount float64) (*Transaction, error) {
 	id, err := uuid.NewUUID()
 	if err != nil {
 		return nil, errors.Wrap(err, "error generating id")
@@ -43,7 +43,7 @@ func NewTransaction(sender, receiver string, amount float64) (*Transaction, erro
 
 // NewPaymentTransaction returns a new transaction
 func NewPaymentTransaction(sender, receiver string, amount float64) (*Transaction, error) {
-	tx, err := NewTransaction(sender, receiver, amount)
+	tx, err := newTransaction(sender, receiver, amount)
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +55,7 @@ func NewPaymentTransaction(sender, receiver string, amount float64) (*Transactio
 
 // NewRefundTransaction returns a new refund
 func NewRefundTransaction(sender, receiver string, amount float64) (*Transaction, error) {
-	tx, err := NewTransaction(sender, receiver, amount)
+	tx, err := newTransaction(sender, receiver, amount)
 	if err != nil {
 		return nil, err
 	}
