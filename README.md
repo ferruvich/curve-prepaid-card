@@ -22,6 +22,13 @@ After capturing it, the merchant can **refund** the user, creating a transaction
 - Better logs;
 - Better HTTP responses, both for HTTP codes and JSON Bodies.
 
+## Technologies used
+- [Go 1.11](https://golang.org/) with [go mod](https://github.com/golang/go/wiki/Modules) to manage dependencies;
+- [gin-gonic/gin](https://github.com/gin-gonic/gin) as HTTP web framework;
+- [golang/mock](https://github.com/golang/mock) to mock interfaces, for Unit testing;
+- [PostgreSQL](https://www.postgresql.org/) as DBMS;
+- [docker](https://www.docker.com/) and [docker-compose](https://docs.docker.com/compose/) to deploy the project;
+
 ## How to run the project
 
 ### What do you need 
