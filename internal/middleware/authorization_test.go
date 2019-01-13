@@ -91,7 +91,7 @@ func TestAuthorizationRequest_Revert(t *testing.T) {
 
 	authReq := &model.AuthorizationRequest{
 		ID: "authID", Merchant: "merchantID", Card: "cardID",
-		Amount: 10.0,
+		Amount: 10.0, Approved: true,
 	}
 
 	t.Run("should fail due to db error", func(t *testing.T) {

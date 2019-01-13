@@ -14,6 +14,7 @@ import (
 func TestAuthorizationRequest_Write(t *testing.T) {
 
 	authReq, _ := model.NewAuthorizationRequest("merchantID", "cardID", 10.0)
+	authReq.Approve()
 	db := &sql.DB{}
 
 	t.Run("should return error due to error on db", func(t *testing.T) {
@@ -71,7 +72,7 @@ func TestAuthorizationRequest_Write(t *testing.T) {
 
 func TestAuthorizationRequest_Read(t *testing.T) {
 
-	authReq := &model.AuthorizationRequest{ID: "id"}
+	authReq := &model.AuthorizationRequest{ID: "id", Approved: true}
 	db := &sql.DB{}
 
 	t.Run("should return error due to error on db", func(t *testing.T) {
@@ -119,6 +120,7 @@ func TestAuthorizationRequest_Read(t *testing.T) {
 func TestAuthorizationRequest_Update(t *testing.T) {
 
 	authReq, _ := model.NewAuthorizationRequest("merchantID", "cardID", 10.0)
+	authReq.Approve()
 	db := &sql.DB{}
 
 	t.Run("should return error due to error on db", func(t *testing.T) {

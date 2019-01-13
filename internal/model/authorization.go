@@ -14,6 +14,7 @@ type AuthorizationRequest struct {
 	Amount   float64 `json:"amount"`
 	Reversed float64 `json:"reversed"`
 	Captured float64 `json:"captured"`
+	Refunded float64 `json:"refunded"`
 }
 
 // NewAuthorizationRequest returns a newly created AuthorizationRequest
@@ -31,6 +32,10 @@ func NewAuthorizationRequest(merchantID string, cardID string, amount float64) (
 
 // Revert reverse some of the amount of the authorization request
 func (ar *AuthorizationRequest) Revert(amount float64) error {
+	if !ar.Approved {
+		return errors.New("cannot do operations to a non approved authorization")
+	}
+
 	if (ar.Reversed + amount) > (ar.Amount - ar.Captured) {
 		return errors.New("cannot reverse such amount")
 	}
@@ -42,11 +47,30 @@ func (ar *AuthorizationRequest) Revert(amount float64) error {
 
 // Capture captures some money, in order to send it
 func (ar *AuthorizationRequest) Capture(amount float64) error {
+	if !ar.Approved {
+		return errors.New("cannot do operations to a non approved authorization")
+	}
+
 	if (ar.Amount - ar.Reversed - ar.Captured) < amount {
 		return errors.New("cannot capture such amount")
 	}
 
 	ar.Captured += amount
+
+	return nil
+}
+
+// Refund refunds some money
+func (ar *AuthorizationRequest) Refund(amount float64) error {
+	if !ar.Approved {
+		return errors.New("cannot do operations to a non approved authorization")
+	}
+
+	if (ar.Captured - ar.Refunded) < amount {
+		return errors.New("cannot refund more than effectively captured")
+	}
+
+	ar.Refunded += amount
 
 	return nil
 }

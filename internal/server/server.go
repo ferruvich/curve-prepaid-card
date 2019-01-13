@@ -53,6 +53,7 @@ func (s *Service) Routers() *gin.Engine {
 	router.POST("/authorization", s.NewAuthorizationRequestHandler().Create())
 	router.POST("/authorization/:authID/capture", s.NewAuthorizationRequestHandler().Capture())
 	router.POST("/authorization/:authID/revert", s.NewAuthorizationRequestHandler().Revert())
+	router.POST("/authorization/:authID/refund", s.NewAuthorizationRequestHandler().Refund())
 
 	return router
 }

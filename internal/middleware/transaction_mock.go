@@ -45,3 +45,16 @@ func (m *MockTransaction) CreatePayment(arg0 string, arg1 float64) (*model.Trans
 func (mr *MockTransactionMockRecorder) CreatePayment(arg0, arg1 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePayment", reflect.TypeOf((*MockTransaction)(nil).CreatePayment), arg0, arg1)
 }
+
+// CreateRefund mocks base method
+func (m *MockTransaction) CreateRefund(arg0 string, arg1 float64) (*model.Transaction, error) {
+	ret := m.ctrl.Call(m, "CreateRefund", arg0, arg1)
+	ret0, _ := ret[0].(*model.Transaction)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateRefund indicates an expected call of CreateRefund
+func (mr *MockTransactionMockRecorder) CreateRefund(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateRefund", reflect.TypeOf((*MockTransaction)(nil).CreateRefund), arg0, arg1)
+}

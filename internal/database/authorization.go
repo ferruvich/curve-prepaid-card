@@ -27,9 +27,9 @@ func (a *AuthorizationRequestDataBase) Write(authReq *model.AuthorizationRequest
 
 	statements := []*pipelineStmt{
 		a.service.newPipelineStmt(
-			"INSERT INTO authorizations(ID,merchant,card,approved,amount,reversed,captured) VALUES ($1,$2,$3,$4,$5,$6,$7)",
+			"INSERT INTO authorizations(ID,merchant,card,approved,amount,reversed,captured,refunded) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)",
 			authReq.ID, authReq.Merchant, authReq.Card, authReq.Approved,
-			authReq.Amount, authReq.Reversed, authReq.Captured,
+			authReq.Amount, authReq.Reversed, authReq.Captured, authReq.Refunded,
 		),
 	}
 
@@ -60,8 +60,8 @@ func (a *AuthorizationRequestDataBase) Read(authReqID string) (*model.Authorizat
 			if !res.Next() {
 				return nil, errors.Errorf("auth request not found")
 			}
-			if err = res.Scan(&authReq.ID, &authReq.Merchant, &authReq.Card,
-				&authReq.Amount, &authReq.Approved, &authReq.Reversed, &authReq.Captured); err != nil {
+			if err = res.Scan(&authReq.ID, &authReq.Merchant, &authReq.Card, &authReq.Amount,
+				&authReq.Approved, &authReq.Reversed, &authReq.Captured, &authReq.Refunded); err != nil {
 				return nil, errors.Wrap(err, "error building auth struct")
 			}
 			return res, err
@@ -78,9 +78,9 @@ func (a *AuthorizationRequestDataBase) Update(authReq *model.AuthorizationReques
 
 	statements := []*pipelineStmt{
 		a.service.newPipelineStmt(
-			"UPDATE authorizations SET merchant=$2,card=$3,approved=$4,amount=$5,reversed=$6,captured=$7 WHERE ID=$1;",
+			"UPDATE authorizations SET merchant=$2,card=$3,approved=$4,amount=$5,reversed=$6,captured=$7,refunded=$8 WHERE ID=$1;",
 			authReq.ID, authReq.Merchant, authReq.Card, authReq.Approved,
-			authReq.Amount, authReq.Reversed, authReq.Captured,
+			authReq.Amount, authReq.Reversed, authReq.Captured, authReq.Refunded,
 		),
 	}
 

@@ -14,6 +14,7 @@ type AuthorizationRequest interface {
 	Create() func(c *gin.Context)
 	Capture() func(c *gin.Context)
 	Revert() func(c *gin.Context)
+	Refund() func(c *gin.Context)
 }
 
 // AuthorizationRequestHandler is the AuthorizationRequest struct
@@ -28,7 +29,7 @@ type AuthorizationRequestBody struct {
 	Amount     float64 `json:"amount" binding:"required"`
 }
 
-// AmountBody embeds a revert request, or a capture one
+// AmountBody embeds a revert request, a capture one or a refund
 type AmountBody struct {
 	Amount float64 `json:"amount" binding:"required"`
 }
@@ -79,6 +80,36 @@ func (ar *AuthorizationRequestHandler) Capture() func(*gin.Context) {
 		}
 
 		tx, err := middleware.NewMiddleware(ar.server.DataBase()).Transaction().CreatePayment(authReqID, request.Amount)
+		if err != nil {
+			fmt.Printf("%+v", err)
+			c.JSON(http.StatusInternalServerError, ErrorMessage{
+				Error: fmt.Sprintf("%v", err),
+			})
+			return
+		}
+
+		c.JSON(http.StatusCreated, tx)
+
+	}
+}
+
+// Refund refunds some of an auth request, is used in POST /authorization/:id/refund
+func (ar *AuthorizationRequestHandler) Refund() func(*gin.Context) {
+	return func(c *gin.Context) {
+
+		authReqID := c.Param("authID")
+
+		request := &AmountBody{}
+		err := c.BindJSON(request)
+		if err != nil {
+			fmt.Printf("%+v", err)
+			c.JSON(http.StatusBadRequest, ErrorMessage{
+				Error: "bad request",
+			})
+			return
+		}
+
+		tx, err := middleware.NewMiddleware(ar.server.DataBase()).Transaction().CreateRefund(authReqID, request.Amount)
 		if err != nil {
 			fmt.Printf("%+v", err)
 			c.JSON(http.StatusInternalServerError, ErrorMessage{

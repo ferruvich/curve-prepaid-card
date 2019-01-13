@@ -31,5 +31,12 @@ CREATE TABLE IF NOT EXISTS authorizations(
     amount DOUBLE PRECISION,
     approved BOOLEAN,
     reversed DOUBLE PRECISION,
-    captured DOUBLE PRECISION
+    captured DOUBLE PRECISION,
+    refunded DOUBLE PRECISION
+);
+
+INSERT INTO users VALUES ('86c8b46c-1750-11e9-ac5d-0242ac160003');
+INSERT INTO merchants VALUES ('a7b492f9-174e-11e9-bf36-0242ac160003');
+INSERT INTO cards VALUES (
+    '8d8c5925-1750-11e9-ac5d-0242ac160003', '86c8b46c-1750-11e9-ac5d-0242ac160003', 10.0, 0.0
 );
